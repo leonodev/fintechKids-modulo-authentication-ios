@@ -1,0 +1,27 @@
+{
+  "configurations" : [
+    {
+      "id" : "D16E1DEC-CC0A-40E7-BF43-59AE3911E21B",
+      "name" : "English Tests",
+      "options" : {
+        "language" : "es",
+        "region" : "US"
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "language" : "es",
+    "region" : "ES",
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:FHKAuthDemo.xcodeproj",
+        "identifier" : "5D28A2262EC8F08000AFF43A",
+        "name" : "FHKAuthDemoTests"
+      }
+    }
+  ],
+  "version" : 1
+}

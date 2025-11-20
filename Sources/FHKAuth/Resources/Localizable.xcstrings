@@ -1,0 +1,329 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "EMAIL_SUGGESTION_CONSECUTIVE_DOTS" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove consecutive dots in the email"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina los puntos consecutivos en el email"
+          }
+        }
+      }
+    },
+    "EMAIL_SUGGESTION_EMPTY" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please enter your email address"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por favor, ingresa tu dirección de email"
+          }
+        }
+      }
+    },
+    "EMAIL_SUGGESTION_INVALID_DOMAIN" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Domain must be valid, example: gmail.com, hotmail.com, etc."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El dominio debe ser válido, ejemplo: gmail.com, hotmail.com, etc."
+          }
+        }
+      }
+    },
+    "EMAIL_SUGGESTION_INVALID_FORMAT" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Make sure the email has the correct format: name@domain.extension"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifica que el email tenga el formato correcto: nombre@dominio.extension"
+          }
+        }
+      }
+    },
+    "EMAIL_SUGGESTION_INVALID_LOCAL_PART" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use only letters, numbers, dots, hyphens or underscores before the @"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa solo letras, números, puntos, guiones o guiones bajos antes del @"
+          }
+        }
+      }
+    },
+    "EMAIL_SUGGESTION_MISSING_AT" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Make sure to include the @ symbol in your email"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asegúrate de incluir el símbolo @ en tu email"
+          }
+        }
+      }
+    },
+    "EMAIL_SUGGESTION_MISSING_DOMAIN" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complete the domain part after the @"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completa la parte del dominio después del @"
+          }
+        }
+      }
+    },
+    "EMAIL_SUGGESTION_STARTING_ENDING_DOT" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove the dot at the beginning or end of the email"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina el punto al inicio o final del email"
+          }
+        }
+      }
+    },
+    "EMAIL_SUGGESTION_TOO_LONG" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use a shorter email address"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa una dirección de email más corta"
+          }
+        }
+      }
+    },
+    "EMAIL_VALIDATION_CONSECUTIVE_DOTS" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email cannot contain consecutive dots"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El email no puede contener puntos consecutivos"
+          }
+        }
+      }
+    },
+    "EMAIL_VALIDATION_EMPTY" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email field cannot be empty"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El campo de email no puede estar vacío"
+          }
+        }
+      }
+    },
+    "EMAIL_VALIDATION_INVALID_DOMAIN" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email domain is invalid"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El dominio del email es inválido"
+          }
+        }
+      }
+    },
+    "EMAIL_VALIDATION_INVALID_FORMAT" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email format is not valid. Example: user@domain.com"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El formato del email no es válido. Ejemplo: usuario@dominio.com"
+          }
+        }
+      }
+    },
+    "EMAIL_VALIDATION_INVALID_LOCAL_PART" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Local part of email (before @) contains invalid characters"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La parte local del email (antes del @) contiene caracteres no válidos"
+          }
+        }
+      }
+    },
+    "EMAIL_VALIDATION_MISSING_AT" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email must contain the @ symbol"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El email debe contener el símbolo @\""
+          }
+        }
+      }
+    },
+    "EMAIL_VALIDATION_MISSING_DOMAIN" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email domain is invalid or incomplete"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El dominio del email es inválido o está incompleto"
+          }
+        }
+      }
+    },
+    "EMAIL_VALIDATION_STARTING_ENDING_DOT" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email cannot start or end with a dot"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El email no puede comenzar o terminar con un punto"
+          }
+        }
+      }
+    },
+    "EMAIL_VALIDATION_TOO_LONG" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email cannot be longer than %lld characters"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El email no puede tener más de %lld caracteres"
+          }
+        }
+      }
+    },
+    "EMAIL_VALIDATION_VALID" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valid email"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email válido"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}
