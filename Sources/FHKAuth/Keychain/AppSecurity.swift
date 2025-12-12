@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Foundation
+import FHKConfig
 
 // MARK: - Security Protocols
 public protocol AppSecurityProtocol: Sendable {
@@ -32,6 +33,7 @@ public actor AppSecurity: AppSecurityProtocol {
     // Property wrappers - se acceden directamente
     @KeychainString(.authToken) private var storedAuthToken
     @KeychainString(.refreshToken) private var storedRefreshToken
+    @KeychainStored<Configuration.LanguageType>(.appLanguage) private var storedLanguage
     @KeychainStored<KCUser>(.userCredentials) private var storedUser
     @KeychainStored<KCSettings>(.appSettings) private var storedSettings
     
@@ -44,6 +46,15 @@ public actor AppSecurity: AppSecurityProtocol {
     
     public var refreshToken: String {
         storedRefreshToken  // Acceso directo
+    }
+    
+    public var language: Configuration.LanguageType? {
+        storedLanguage
+    }
+    
+    // Método para guardar el idioma
+    public func setLanguage(_ language: Configuration.LanguageType?) async {
+        storedLanguage = language
     }
     
     public var user: KCUser? {

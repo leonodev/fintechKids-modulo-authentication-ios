@@ -5,17 +5,37 @@ let package = Package(
     name: "FHKAuth",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v16)
+        .iOS(.v17)
     ],
     products: [
         .library(
             name: "FHKAuth",
             targets: ["FHKAuth"]),
+        
+        
+    ],
+    dependencies: [
+        .package(url: "https://github.com/supabase/supabase-swift.git",
+                .upToNextMajor(from: "2.5.1")),
+        
+        .package(url: "https://github.com/leonodev/fintechKids-modulo-utils-ios.git",
+                .upToNextMajor(from: "1.0.2")),
+        
+        .package(url: "https://github.com/leonodev/fintechKids-modulo-core-ios.git",
+                .upToNextMajor(from: "1.0.3")),
+        
+        .package(url: "https://github.com/leonodev/fintechKids-modulo-config-ios.git", branch: "main")
     ],
     targets: [
         .target(
             name: "FHKAuth",
-            dependencies: [],
+            dependencies: [
+                // Modules
+                .product(name: "Supabase", package: "supabase-swift"),
+                .product(name: "FHKUtils", package: "fintechKids-modulo-utils-ios"),
+                .product(name: "FHKCore", package: "fintechKids-modulo-core-ios"),
+                .product(name: "FHKConfig", package: "fintechKids-modulo-config-ios")
+            ],
             resources: [.process("Resources")]
         ),
         .testTarget(

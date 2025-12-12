@@ -18,12 +18,16 @@ struct MenuNavigationOptions: View {
     var body: some View {
         NavigationStack {
             List {
-                NavigationLink("Ir a Vista Email Validation") {
+                NavigationLink("Email Validation") {
                     SimpleEmailValidationView()
                 }
                 
-                NavigationLink("Ir a KeyChain Validation") {
+                NavigationLink("KeyChain Validation") {
                     LoginView()
+                }
+                
+                NavigationLink("Login Supabase") {
+                    LoginScreen()
                 }
             }
             .navigationTitle("FHK Auth Demo")
@@ -35,3 +39,4 @@ struct MenuNavigationOptions: View {
 #Preview {
     MenuNavigationOptions()
 }
+

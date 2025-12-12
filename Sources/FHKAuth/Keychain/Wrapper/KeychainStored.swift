@@ -49,4 +49,5 @@ enum KeychainKey: String, CaseIterable, Sendable {
     case userCredentials
     case appSettings
     case biometricData
+    case appLanguage
 }
