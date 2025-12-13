@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FHKAuth
+import FHKStorage
 
 struct LoginView: View {
     @StateObject var viewModel: LoginViewModel = LoginViewModel()
@@ -51,7 +52,7 @@ struct LoginView: View {
             }
             .onAppear {
                 Task {
-                    await viewModel.loadAppSettings()
+                    await viewModel.readAuthToken()
                 }
             }
         }
@@ -149,25 +150,10 @@ private extension LoginView {
                 Spacer()
                 
                 Button("Cerrar Sesión") {
-                    Task { await viewModel.logout() }
+                    //Task { await viewModel.logout() }
                 }
                 .buttonStyle(.bordered)
                 .tint(.red)
-            }
-            
-            HStack(spacing: 12) {
-                Button("Refresh Token") {
-                    Task { await viewModel.refreshToken() }
-                }
-                .buttonStyle(.bordered)
-                
-                Button("Validar Sesión") {
-                    Task {
-                        let isValid = await viewModel.validateCurrentSession()
-                        viewModel.errorMessage = isValid ? "✅ Sesión válida" : "❌ Sesión inválida - Logout automático"
-                    }
-                }
-                .buttonStyle(.bordered)
             }
         }
         .padding()
@@ -183,12 +169,6 @@ private extension LoginView {
             
             // Operaciones de Settings
             settingsOperationsView
-            
-            // Operaciones de Seguridad
-            securityOperationsView
-            
-            // Operaciones de Usuario
-            userOperationsView
         }
     }
     
@@ -210,122 +190,18 @@ private extension LoginView {
                 }
             }
             
-            HStack(spacing: 12) {
-                TextField("Nuevo tema", text: $newTheme)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                
-                Button("Actualizar") {
-                    Task {
-                        await viewModel.updateAppSettings(theme: newTheme.isEmpty ? nil : newTheme)
-                        newTheme = ""
-                    }
-                }
-                .buttonStyle(.bordered)
-                .disabled(newTheme.isEmpty)
-            }
-            
-            HStack(spacing: 12) {
-                Button("Tema Light") {
-                    Task { await viewModel.updateAppSettings(theme: "light") }
-                }
-                .buttonStyle(.bordered)
-                
-                Button("Tema Dark") {
-                    Task { await viewModel.updateAppSettings(theme: "dark") }
-                }
-                .buttonStyle(.bordered)
-                
-                Button("Reset") {
-                    Task { await viewModel.resetAppSettings() }
-                }
-                .buttonStyle(.bordered)
-                .tint(.orange)
-            }
-            
             if let settings = viewModel.appSettings {
                 Toggle("Notificaciones: \(settings.notifications ? "Activadas" : "Desactivadas")",
                       isOn: Binding(
                         get: { settings.notifications },
                         set: { newValue in
-                            Task { await viewModel.updateAppSettings(notifications: newValue) }
+                           
                         }
                       ))
             }
         }
         .padding()
         .background(Color.blue.opacity(0.1))
-        .cornerRadius(12)
-    }
-    
-    var securityOperationsView: some View {
-        VStack(spacing: 16) {
-            Text("Seguridad")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                Button("Verificar Token") {
-                    Task {
-                        let exists = await viewModel.checkIfTokenExists()
-                        viewModel.errorMessage = exists ? "✅ Token existe en Keychain" : "❌ No hay token almacenado"
-                    }
-                }
-                .buttonStyle(.bordered)
-                
-                Button("Info Seguridad") {
-                    Task {
-                        let info = await viewModel.getSecurityInfo()
-                        viewModel.errorMessage = "ℹ️ " + info.replacingOccurrences(of: "\n", with: " • ")
-                    }
-                }
-                .buttonStyle(.bordered)
-                
-                Button("Actualizar Perfil") {
-                    Task { await viewModel.updateUserProfile() }
-                }
-                .buttonStyle(.bordered)
-                .disabled(!viewModel.isLoggedIn)
-                
-                Button("Limpiar Todo") {
-                    Task { await viewModel.clearAllSecurityData() }
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.red)
-            }
-        }
-        .padding()
-        .background(Color.orange.opacity(0.1))
-        .cornerRadius(12)
-    }
-    
-    var userOperationsView: some View {
-        VStack(spacing: 16) {
-            Text("Información de Usuario")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            
-            if viewModel.isLoggedIn {
-                Button("Obtener Info Usuario") {
-                    Task {
-                        let userInfo = await viewModel.getCurrentUserInfo()
-                        viewModel.errorMessage = "👤 Usuario: \(userInfo.user?.email ?? "N/A") • Token: \(userInfo.token.prefix(10))..."
-                    }
-                }
-                .buttonStyle(.bordered)
-            } else {
-                Text("Inicia sesión para ver las operaciones de usuario")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(8)
-            }
-        }
-        .padding()
-        .background(Color.purple.opacity(0.1))
         .cornerRadius(12)
     }
     
@@ -453,7 +329,7 @@ private struct InstructionRow: View {
 #Preview("Logged In State") {
     let viewModel = LoginViewModel()
     
-    return LoginView()
+    LoginView()
         .environmentObject(viewModel)
         .onAppear {
             Task {
@@ -473,7 +349,7 @@ private struct InstructionRow: View {
 #Preview("Loading State") {
     let viewModel = LoginViewModel()
     
-    return LoginView()
+    LoginView()
         .environmentObject(viewModel)
         .onAppear {
             Task {
@@ -488,7 +364,7 @@ private struct InstructionRow: View {
 #Preview("Error State") {
     let viewModel = LoginViewModel()
     
-    return LoginView()
+    LoginView()
         .environmentObject(viewModel)
         .onAppear {
             Task {
@@ -497,12 +373,4 @@ private struct InstructionRow: View {
                 }
             }
         }
-}
-
-#Preview("With Mock") {
-    let mockSecurity = MockAppSecurity()
-    let viewModel = LoginViewModel(security: mockSecurity)
-    
-    LoginView()
-        .environmentObject(viewModel)
 }

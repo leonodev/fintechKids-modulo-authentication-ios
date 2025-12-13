@@ -38,6 +38,15 @@
       }
     },
     {
+      "identity" : "fintechkids-modulo-storage-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/leonodev/fintechKids-modulo-storage-ios.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "a09e0f32dd7e844be48429ce0bd898fcc72c7b50"
+      }
+    },
+    {
       "identity" : "fintechkids-modulo-utils-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/leonodev/fintechKids-modulo-utils-ios.git",
