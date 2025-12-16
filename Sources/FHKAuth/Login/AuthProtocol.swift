@@ -8,6 +8,7 @@
 import Foundation
 import Supabase
 import FHKUtils
+import FHKCore
 
 public enum AuthDomainError: Error {
     case invalidResponseType
@@ -64,9 +65,8 @@ final class SupabaseAuth: AuthProtocol {
     }
     
     private static func getSecureSupabaseClient() -> SupabaseClient? {
-        let SUPABASE_BASE_URL = "https://chaukyiczbxkkbnxgahi.supabase.co"
-        
         do {
+            let SUPABASE_BASE_URL = try ServicesAPI.getURL(serviceKey: .supabase)
             // Call the manager to get the decrypted key
             let anonKey = try SecureKeyManager().getAnonKey()
             

@@ -21,8 +21,7 @@ let package = Package(
         .package(url: "https://github.com/leonodev/fintechKids-modulo-utils-ios.git",
                 .upToNextMajor(from: "1.0.2")),
         
-        .package(url: "https://github.com/leonodev/fintechKids-modulo-core-ios.git",
-                .upToNextMajor(from: "1.0.3")),
+        .package(url: "https://github.com/leonodev/fintechKids-modulo-core-ios.git", branch: "main"),
         
         .package(url: "https://github.com/leonodev/fintechKids-modulo-config-ios.git", branch: "main"),
         

@@ -25,7 +25,7 @@
       "location" : "https://github.com/leonodev/fintechKids-modulo-config-ios.git",
       "state" : {
         "branch" : "main",
-        "revision" : "55d9c069fedb30f93d8fb3f33e08ef4ff43bf394"
+        "revision" : "adee4212a26c50c422f6019fe326005da94372a5"
       }
     },
     {
@@ -33,8 +33,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/leonodev/fintechKids-modulo-core-ios.git",
       "state" : {
-        "revision" : "6f21bafc1585d9ad2ec9045765280c5330f2ef07",
-        "version" : "1.0.3"
+        "branch" : "main",
+        "revision" : "1070c47656377f38464d0ea1edb711d271f0e3ce"
+      }
+    },
+    {
+      "identity" : "fintechkids-modulo-designsystem-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/leonodev/fintechKids-modulo-designsystem-ios.git",
+      "state" : {
+        "revision" : "4396fc3904b008771d0748ab60cce4c948e1db16",
+        "version" : "1.0.4"
       }
     },
     {
@@ -43,7 +52,7 @@
       "location" : "https://github.com/leonodev/fintechKids-modulo-storage-ios.git",
       "state" : {
         "branch" : "main",
-        "revision" : "a09e0f32dd7e844be48429ce0bd898fcc72c7b50"
+        "revision" : "db3aa94ece3e00ad361bc79a990849cba2472d02"
       }
     },
     {
