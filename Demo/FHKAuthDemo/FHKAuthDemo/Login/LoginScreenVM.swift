@@ -31,14 +31,15 @@ final class LoginScreenVM: ObservableObject {
         errorMessage = nil
         
         do {
-            try await loginActor.loginUser(platform: .supabase,
-                                           email: self.email,
-                                           password: self.password)
-            
+            try await loginActor.loginUser(platform: .supabase, email: self.email, password: self.password)
             isAuthenticated = true
+        } catch let error as AuthDomainError {
+            // Capturamos nuestros errores de dominio ya procesados
+            self.errorMessage = error.userMessage
+            isAuthenticated = false
         } catch {
-            // Manejo de errores
-            errorMessage = "Login failed: \(error.localizedDescription)"
+            // Cualquier otro error que no hayamos previsto
+            self.errorMessage = "Error de conexión: \(error.localizedDescription)"
             isAuthenticated = false
         }
         
