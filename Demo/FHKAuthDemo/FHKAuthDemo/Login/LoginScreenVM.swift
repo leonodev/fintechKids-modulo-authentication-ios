@@ -7,8 +7,9 @@
 
 import SwiftUI
 import Combine
-import FHKAuth
 import Supabase
+import FHKAuth
+import FHKUtils
 
 final class LoginScreenVM: ObservableObject {
     private let loginActor: Login
@@ -39,11 +40,43 @@ final class LoginScreenVM: ObservableObject {
             isAuthenticated = false
         } catch {
             // Cualquier otro error que no hayamos previsto
-            self.errorMessage = "Error de conexión: \(error.localizedDescription)"
+            self.errorMessage = "\(error.localizedDescription)"
             isAuthenticated = false
         }
         
 
         isLoading = false
+    }
+}
+
+extension AuthDomainError {
+    
+    public var userMessage: String {
+        switch self {
+            
+        case .invalidCredentials:
+            return "user y/o password wrong."
+            
+        case .userNotFound:
+            return "user not found."
+            
+        case .emailNotConfirmed:
+            return "email not confirmed."
+            
+        case .otpExpired:
+            return "opt expired."
+            
+        case .tooManyRequests:
+            return "too many requests. try again later."
+          
+        case .authenticationNotImplemented:
+            return "authentication not implemented."
+            
+        case .refreshSession:
+            return "refresh session. try again."
+            
+        case .unknown(let code):
+            return "error unknown (\(code))."
+        }
     }
 }

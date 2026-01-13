@@ -18,7 +18,7 @@ final class SupabaseAuth: AuthProtocol {
         
         do {
             guard let client = supabaseClient else {
-                throw AuthDomainError.clientAuthInvalid
+                throw AuthDomainError.authenticationNotImplemented
             }
             
             let session = try await client.auth.signIn(email: email, password: password)
@@ -28,6 +28,7 @@ final class SupabaseAuth: AuthProtocol {
             if let authError = error as? AuthError {
                 throw mapToDomainError(authError)
             }
+            
             throw AuthDomainError.unknown(error.localizedDescription)
         }
     }
