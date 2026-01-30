@@ -21,6 +21,7 @@ public enum AuthDomainError: Error {
     case tooManyRequests
     case authenticationNotImplemented
     case refreshSession
+    case userAlreadyExist
     case unknown(String)
 
     public static func from(errorCode: String) -> AuthDomainError {
@@ -39,6 +40,10 @@ public enum AuthDomainError: Error {
             
         case "too_many_requests":
             return .tooManyRequests
+            
+        // Register cases
+        case "user_already_exists":
+            return .userAlreadyExist
             
         default:
             return .unknown(errorCode)

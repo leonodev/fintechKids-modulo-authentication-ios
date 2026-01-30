@@ -29,6 +29,10 @@ struct MenuNavigationOptions: View {
                 NavigationLink("Login Supabase") {
                     LoginScreen()
                 }
+                
+                NavigationLink("Register Supabase") {
+                    RegisterScreen()
+                }
             }
             .navigationTitle("FHK Auth Demo")
         }

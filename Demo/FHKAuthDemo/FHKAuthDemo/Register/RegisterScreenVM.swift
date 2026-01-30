@@ -1,8 +1,8 @@
 //
-//  LoginScreenVM.swift
+//  RegisterScreenVM.swift
 //  FHKAuthDemo
 //
-//  Created by Fredy Leon on 11/12/25.
+//  Created by Fredy Leon on 30/1/26.
 //
 
 import SwiftUI
@@ -11,7 +11,7 @@ import Supabase
 import FHKAuth
 import FHKUtils
 
-final class LoginScreenVM: ObservableObject {
+final class RegisterScreenVM: ObservableObject {
     private let loginActor: Login
     
     @Published var email = ""
@@ -20,29 +20,31 @@ final class LoginScreenVM: ObservableObject {
     @Published var errorMessage: String?
     
     // Estado de la sesión
-    @Published var isAuthenticated = false
+    @Published var isRegistered = false
    
     init(loginActor: Login = Login(factory: DefaultAuthServiceFactory())) {
         self.loginActor = loginActor
     }
     
     @MainActor
-    func performLogin() async {
+    func performRegister() async {
         isLoading = true
         errorMessage = nil
         
         do {
-            try await loginActor.loginUser(platform: .supabase, email: self.email, password: self.password)
-            isAuthenticated = true
+            try await loginActor.registerUser(platform: .supabase,
+                                              email: self.email,
+                                              password: self.password)
+            isRegistered = true
         } catch let error as AuthDomainError {
-            // Capturamos nuestros errores de dominio ya procesados
             self.errorMessage = "\(error.localizedDescription)"
-            isAuthenticated = false
+            isRegistered = false
         } catch {
             // Cualquier otro error que no hayamos previsto
             self.errorMessage = "\(error.localizedDescription)"
-            isAuthenticated = false
+            isRegistered = false
         }
+        
 
         isLoading = false
     }

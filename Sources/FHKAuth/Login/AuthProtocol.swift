@@ -14,6 +14,7 @@ public protocol AuthProtocol: Sendable {
     func loginUser(email: String, password: String) async throws -> AuthResponseProtocol
     func logoutUser() async throws
     func refreshSession() async throws -> AuthResponseProtocol
+    func registerUser(email: String, password: String) async throws -> AuthResponse
 
     // MARK: - User Data
     var isUserAuthenticated: Bool { get }
@@ -57,5 +58,12 @@ public actor Login {
        
         let response = try await service.loginUser(email: email, password: password)
         self.isAuthenticated = response.accessToken != nil
+    }
+    
+    public func registerUser(platform: AuthPlatform, email: String, password: String) async throws {
+        let service = try factory.makeAuthService(for: platform)
+       
+        let response = try await service.registerUser(email: email, password: password)
+        self.isAuthenticated = ((response.user.identities?.isEmpty) != nil)
     }
 }

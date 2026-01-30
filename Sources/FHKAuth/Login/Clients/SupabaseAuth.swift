@@ -13,7 +13,7 @@ import FHKCore
 final class SupabaseAuth: AuthProtocol {
     private let supabaseClient: SupabaseClient? = getSecureSupabaseClient()
 
-    // MARK: - Core Authentication
+    // MARK: - Login Authentication
     func loginUser(email: String, password: String) async throws -> AuthResponseProtocol {
         
         do {
@@ -25,6 +25,29 @@ final class SupabaseAuth: AuthProtocol {
             return SupabaseAuthResponse(session: session)
         } catch {
             
+            if let authError = error as? AuthError {
+                throw mapToDomainError(authError)
+            }
+            
+            throw AuthDomainError.unknown(error.localizedDescription)
+        }
+    }
+    
+    // MARK: - Registration
+    func registerUser(email: String, password: String) async throws -> AuthResponse {
+        do {
+            guard let client = supabaseClient else {
+                throw AuthDomainError.authenticationNotImplemented
+            }
+            
+            let operation = try await client.auth.signUp(
+                email: email,
+                password: password
+            )
+            
+            return operation
+            
+        } catch {
             if let authError = error as? AuthError {
                 throw mapToDomainError(authError)
             }
@@ -48,6 +71,9 @@ final class SupabaseAuth: AuthProtocol {
     var isUserAuthenticated: Bool {
         return supabaseClient?.auth.currentUser != nil
     }
+}
+
+private extension SupabaseAuth {
     
     private static func getSecureSupabaseClient() -> SupabaseClient? {
         do {
