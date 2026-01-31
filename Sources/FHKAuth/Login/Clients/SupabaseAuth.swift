@@ -10,11 +10,11 @@ import Supabase
 import FHKUtils
 import FHKCore
 
-final class SupabaseAuth: AuthProtocol {
+public final class SupabaseAuth: AuthProtocol {
     private let supabaseClient: SupabaseClient? = getSecureSupabaseClient()
 
     // MARK: - Login Authentication
-    func loginUser(email: String, password: String) async throws -> AuthResponseProtocol {
+    public func loginUser(email: String, password: String) async throws -> AuthResponseProtocol {
         
         do {
             guard let client = supabaseClient else {
@@ -34,7 +34,7 @@ final class SupabaseAuth: AuthProtocol {
     }
     
     // MARK: - Registration
-    func registerUser(email: String, password: String) async throws -> AuthResponse {
+    public func registerUser(email: String, password: String) async throws -> AuthResponse {
         do {
             guard let client = supabaseClient else {
                 throw AuthDomainError.authenticationNotImplemented
@@ -56,11 +56,11 @@ final class SupabaseAuth: AuthProtocol {
         }
     }
     
-    func logoutUser() async throws {
+    public func logoutUser() async throws {
         try await supabaseClient?.auth.signOut()
     }
 
-    func refreshSession() async throws -> AuthResponseProtocol {
+    public func refreshSession() async throws -> AuthResponseProtocol {
         guard let session = try await supabaseClient?.auth.refreshSession() else {
             throw AuthDomainError.refreshSession
         }
@@ -68,14 +68,14 @@ final class SupabaseAuth: AuthProtocol {
         return SupabaseAuthResponse(session: session)
     }
 
-    var isUserAuthenticated: Bool {
+    public var isUserAuthenticated: Bool {
         return supabaseClient?.auth.currentUser != nil
     }
 }
 
-private extension SupabaseAuth {
+extension SupabaseAuth {
     
-    private static func getSecureSupabaseClient() -> SupabaseClient? {
+    static func getSecureSupabaseClient() -> SupabaseClient? {
         do {
             let SUPABASE_BASE_URL = try ServicesAPI.getURL(serviceKey: .supabase)
             let anonKey = try SecureKeyManager().getAnonKey()
@@ -93,7 +93,7 @@ private extension SupabaseAuth {
         }
     }
     
-    private func parseSupabaseError(_ error: Error) -> SupabaseApiError? {
+    func parseSupabaseError(_ error: Error) -> SupabaseApiError? {
         guard let authError = error as? AuthError else { return nil }
         
         switch authError {
@@ -112,7 +112,7 @@ private extension SupabaseAuth {
         }
     }
     
-    private func mapToDomainError(_ error: AuthError) -> AuthDomainError {
+    func mapToDomainError(_ error: AuthError) -> AuthDomainError {
         switch error {
         case .api(_, let errorCode, _, _):
             // We extract the rawValue and use the mapper
