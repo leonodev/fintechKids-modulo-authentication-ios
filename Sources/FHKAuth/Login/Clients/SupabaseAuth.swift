@@ -75,7 +75,7 @@ public final class SupabaseAuth: AuthProtocol {
 
 extension SupabaseAuth {
     
-    static func getSecureSupabaseClient() -> SupabaseClient? {
+    public static func getSecureSupabaseClient() -> SupabaseClient? {
         do {
             let SUPABASE_BASE_URL = try ServicesAPI.getURL(serviceKey: .supabase)
             let anonKey = try SecureKeyManager().getAnonKey()
