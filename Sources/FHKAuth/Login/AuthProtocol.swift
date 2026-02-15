@@ -53,11 +53,17 @@ public actor Login {
         self.factory = factory
     }
     
-    public func loginUser(platform: AuthPlatform, email: String, password: String) async throws {
+    public func loginUser(platform: AuthPlatform, email: String, password: String) async throws -> String {
         let service = try factory.makeAuthService(for: platform)
-       
+        
         let response = try await service.loginUser(email: email, password: password)
         self.isAuthenticated = response.accessToken != nil
+        
+        guard let token = response.accessToken else {
+            throw FHKAuthError.unknown
+        }
+        
+        return token
     }
     
     public func registerUser(platform: AuthPlatform, email: String, password: String) async throws {
