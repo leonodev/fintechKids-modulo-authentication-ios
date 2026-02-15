@@ -10,6 +10,13 @@ import Supabase
 import FHKUtils
 import FHKCore
 
+public enum FHKSecurityError: Error {
+    case generateHashPassword
+    case userNotRegisteredIntoDevice
+    case hashingFailed
+    case accessTokenNotGenerate
+}
+
 public protocol AuthProtocol: Sendable {
     func loginUser(email: String, password: String) async throws -> AuthResponseProtocol
     func logoutUser() async throws
@@ -60,7 +67,7 @@ public actor Login {
         self.isAuthenticated = response.accessToken != nil
         
         guard let token = response.accessToken else {
-            throw FHKAuthError.unknown
+            throw FHKSecurityError.accessTokenNotGenerate
         }
         
         return token
