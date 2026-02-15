@@ -10,6 +10,17 @@ import Supabase
 import FHKUtils
 import FHKCore
 
+public protocol AuthProtocol: Sendable {
+    func loginUser(email: String, password: String) async throws -> AuthResponseProtocol
+    func logoutUser() async throws
+    func refreshSession() async throws -> AuthResponseProtocol
+    func registerUser(email: String, password: String) async throws -> AuthResponse
+    func setSession(accessToken: String) async throws
+
+    // MARK: - User Data
+    var isUserAuthenticated: Bool { get }
+}
+
 public final class SupabaseAuth: AuthProtocol {
     private let supabaseClient: SupabaseClient? = getSecureSupabaseClient()
 
@@ -70,6 +81,16 @@ public final class SupabaseAuth: AuthProtocol {
 
     public var isUserAuthenticated: Bool {
         return supabaseClient?.auth.currentUser != nil
+    }
+    
+    public func setSession(accessToken: String) async throws {
+        guard let client = supabaseClient else {
+            throw AuthDomainError.authenticationNotImplemented
+        }
+        
+        // Supabase necesita un Access Token para considerar que la sesión es válida.
+        // El Refresh Token se puede dejar vacío si solo quieres rehidratar la sesión actual.
+        try await client.auth.setSession(accessToken: accessToken, refreshToken: "")
     }
 }
 

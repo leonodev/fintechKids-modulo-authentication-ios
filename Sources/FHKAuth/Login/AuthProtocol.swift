@@ -17,16 +17,6 @@ public enum FHKSecurityError: Error {
     case accessTokenNotGenerate
 }
 
-public protocol AuthProtocol: Sendable {
-    func loginUser(email: String, password: String) async throws -> AuthResponseProtocol
-    func logoutUser() async throws
-    func refreshSession() async throws -> AuthResponseProtocol
-    func registerUser(email: String, password: String) async throws -> AuthResponse
-
-    // MARK: - User Data
-    var isUserAuthenticated: Bool { get }
-}
-
 public protocol AuthServiceFactory: Sendable {
     func makeAuthService(for platform: Login.AuthPlatform) throws -> any AuthProtocol
 }
@@ -78,5 +68,15 @@ public actor Login {
        
         let response = try await service.registerUser(email: email, password: password)
         self.isAuthenticated = ((response.user.identities?.isEmpty) != nil)
+    }
+    
+    public func restoreSession(platform: AuthPlatform, token: String) async throws {
+        let service = try factory.makeAuthService(for: platform)
+        
+        // Llamamos al nuevo método que acabamos de crear
+        try await service.setSession(accessToken: token)
+        
+        // Si no dio error, el usuario ya está autenticado
+        self.isAuthenticated = true
     }
 }
