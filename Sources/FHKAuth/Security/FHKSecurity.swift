@@ -7,13 +7,14 @@
 
 import Foundation
 import CommonCrypto
+import FHKInjections
 
-public protocol FHKSecurityProtocol {
+public protocol FHKSecurityProtocol: FHKInjectableProtocol {
     func generateSecuritySeed() -> Data?
     func hashPassword(_ password: String, securitySeed: Data) -> String?
 }
 
-public struct FHKSecurity: FHKSecurityProtocol {
+public final class FHKSecurity: FHKSecurityProtocol {
     /// Paso 1.1: Generar una "SecuritySeed" única para cada usuario.
     /// Esto evita que dos contraseñas iguales generen el mismo hash.
     public func generateSecuritySeed() -> Data? {

@@ -23,10 +23,10 @@ final class LoginViewModel: ObservableObject {
     @Published var appSettings: KCSettings?
     
     // MARK: - Dependencies
-    private let storage: UserDefaultsProtocol
+    private let storage: FHKUserDefaultsProtocol
     
     // MARK: - Initialization
-    init(storage: UserDefaultsProtocol = UserDefaultStorage()) {
+    init(storage: FHKUserDefaultsProtocol = FHKUserDefault()) {
         self.storage = storage
     }
     
