@@ -17,6 +17,10 @@ public protocol FHKSecurityProtocol: FHKInjectableProtocol {
 public final class FHKSecurity: FHKSecurityProtocol {
     /// Paso 1.1: Generar una "SecuritySeed" única para cada usuario.
     /// Esto evita que dos contraseñas iguales generen el mismo hash.
+    ///
+    
+    public init() {}
+    
     public func generateSecuritySeed() -> Data? {
         var data = Data(count: 16)
         let status = data.withUnsafeMutableBytes { bytes in
