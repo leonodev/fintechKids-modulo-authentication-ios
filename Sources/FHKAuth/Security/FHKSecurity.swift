@@ -7,11 +7,20 @@
 
 import Foundation
 import CommonCrypto
+import LocalAuthentication
 import FHKInjections
+
+public enum BiometryType {
+    case faceID
+    case touchID
+    case none
+}
 
 public protocol FHKSecurityProtocol: FHKInjectableProtocol {
     func generateSecuritySeed() -> Data?
     func hashPassword(_ password: String, securitySeed: Data) -> String?
+    func getBiometryType() -> BiometryType
+    var biometryIcon: String { get }
 }
 
 public final class FHKSecurity: FHKSecurityProtocol {
@@ -20,6 +29,14 @@ public final class FHKSecurity: FHKSecurityProtocol {
     ///
     
     public init() {}
+    
+    public var biometryIcon: String {
+        switch getBiometryType() {
+        case .faceID: return "faceid"
+        case .touchID: return "touchid"
+        case .none: return ""
+        }
+    }
     
     public func generateSecuritySeed() -> Data? {
         var data = Data(count: 16)
@@ -65,5 +82,27 @@ public final class FHKSecurity: FHKSecurityProtocol {
         }
         
         return status == kCCSuccess ? derivedKey.base64EncodedString() : nil
+    }
+    
+    public func getBiometryType() -> BiometryType {
+        let context = LAContext()
+        var error: NSError?
+        
+        // Verificamos si el hardware está disponible y configurado
+        guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
+            return .none
+        }
+        
+        // Una vez validado, preguntamos qué tipo específico es
+        switch context.biometryType {
+        case .faceID:
+            return .faceID
+            
+        case .touchID:
+            return .touchID
+            
+        default:
+            return .none
+        }
     }
 }
