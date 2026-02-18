@@ -10,13 +10,6 @@ import Supabase
 import FHKUtils
 import FHKCore
 
-public enum FHKSecurityError: Error {
-    case generateHashPassword
-    case userNotRegisteredIntoDevice
-    case hashingFailed
-    case accessTokenNotGenerate
-}
-
 public protocol AuthServiceFactory: Sendable {
     func makeAuthService(for platform: Login.AuthPlatform) throws -> any AuthProtocol
 }
@@ -30,7 +23,7 @@ public final class DefaultAuthServiceFactory: AuthServiceFactory {
             return SupabaseAuth()
             
         case .firebase:
-            throw AuthDomainError.authenticationNotImplemented
+            throw FHKDomainError.authenticationNotImplemented
         }
     }
 }
@@ -57,7 +50,7 @@ public actor Login {
         self.isAuthenticated = response.accessToken != nil
         
         guard let token = response.accessToken else {
-            throw FHKSecurityError.accessTokenNotGenerate
+            throw FHKDomainError.accessToken
         }
         
         return token

@@ -34,7 +34,7 @@ final class LoginScreenVM: ObservableObject {
         do {
             try await loginActor.loginUser(platform: .supabase, email: self.email, password: self.password)
             isAuthenticated = true
-        } catch let error as AuthDomainError {
+        } catch let error as FHKDomainError {
             // Capturamos nuestros errores de dominio ya procesados
             self.errorMessage = "\(error.localizedDescription)"
             isAuthenticated = false

@@ -36,7 +36,7 @@ final class RegisterScreenVM: ObservableObject {
                                               email: self.email,
                                               password: self.password)
             isRegistered = true
-        } catch let error as AuthDomainError {
+        } catch let error as FHKDomainError {
             self.errorMessage = "\(error.localizedDescription)"
             isRegistered = false
         } catch {

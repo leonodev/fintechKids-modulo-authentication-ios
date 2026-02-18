@@ -29,7 +29,7 @@ public final class SupabaseAuth: AuthProtocol {
         
         do {
             guard let client = supabaseClient else {
-                throw AuthDomainError.authenticationNotImplemented
+                throw FHKDomainError.authenticationNotImplemented
             }
             
             let session = try await client.auth.signIn(email: email, password: password)
@@ -40,7 +40,7 @@ public final class SupabaseAuth: AuthProtocol {
                 throw mapToDomainError(authError)
             }
             
-            throw AuthDomainError.unknown(error.localizedDescription)
+            throw FHKDomainError.unknown(error.localizedDescription)
         }
     }
     
@@ -48,7 +48,7 @@ public final class SupabaseAuth: AuthProtocol {
     public func registerUser(email: String, password: String) async throws -> AuthResponse {
         do {
             guard let client = supabaseClient else {
-                throw AuthDomainError.authenticationNotImplemented
+                throw FHKDomainError.authenticationNotImplemented
             }
             
             let operation = try await client.auth.signUp(
@@ -63,7 +63,7 @@ public final class SupabaseAuth: AuthProtocol {
                 throw mapToDomainError(authError)
             }
             
-            throw AuthDomainError.unknown(error.localizedDescription)
+            throw FHKDomainError.unknown(error.localizedDescription)
         }
     }
     
@@ -73,7 +73,7 @@ public final class SupabaseAuth: AuthProtocol {
 
     public func refreshSession() async throws -> AuthResponseProtocol {
         guard let session = try await supabaseClient?.auth.refreshSession() else {
-            throw AuthDomainError.refreshSession
+            throw FHKDomainError.refreshSession
         }
 
         return SupabaseAuthResponse(session: session)
@@ -85,7 +85,7 @@ public final class SupabaseAuth: AuthProtocol {
     
     public func setSession(accessToken: String) async throws {
         guard let client = supabaseClient else {
-            throw AuthDomainError.authenticationNotImplemented
+            throw FHKDomainError.authenticationNotImplemented
         }
         
         // Supabase necesita un Access Token para considerar que la sesión es válida.
@@ -133,11 +133,11 @@ extension SupabaseAuth {
         }
     }
     
-    func mapToDomainError(_ error: AuthError) -> AuthDomainError {
+    func mapToDomainError(_ error: AuthError) -> FHKDomainError {
         switch error {
         case .api(_, let errorCode, _, _):
             // We extract the rawValue and use the mapper
-            return AuthDomainError.from(errorCode: errorCode.rawValue)
+            return FHKDomainError.from(errorCode: errorCode.rawValue)
         default:
             return .unknown(error.localizedDescription)
         }

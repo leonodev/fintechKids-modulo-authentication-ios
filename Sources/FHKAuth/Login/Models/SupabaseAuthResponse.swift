@@ -13,7 +13,7 @@ public protocol AuthResponseProtocol: Sendable {
     var userID: String { get }
 }
 
-public enum AuthDomainError: Error {
+public enum FHKDomainError: Error {
     case invalidCredentials
     case userNotFound
     case emailNotConfirmed
@@ -22,9 +22,10 @@ public enum AuthDomainError: Error {
     case authenticationNotImplemented
     case refreshSession
     case userAlreadyExist
+    case accessToken
     case unknown(String)
 
-    public static func from(errorCode: String) -> AuthDomainError {
+    public static func from(errorCode: String) -> FHKDomainError {
         switch errorCode {
         case "invalid_credentials":
             return .invalidCredentials
