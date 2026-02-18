@@ -7,13 +7,14 @@
 
 import Foundation
 import Supabase
+import FHKCore
 
 public protocol AuthResponseProtocol: Sendable {
     var accessToken: String? { get }
     var userID: String { get }
 }
 
-public enum FHKDomainError: Error {
+public enum FHKDomainError: FHKError {
     case invalidCredentials
     case userNotFound
     case emailNotConfirmed
