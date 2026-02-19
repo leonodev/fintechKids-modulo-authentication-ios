@@ -26,12 +26,48 @@ public enum FHKDomainError: FHKError {
     case accessToken
     case unknown(String)
     
-    var logMessage: String {
+    public var logMessage: String {
         switch self {
-        case .userNotFound: return "user not found autentication service"
-        case .emailNotConfirmed: return "user email not confirmed"
-        case .authenticationNotImplemented: return "service autentication not implemented"
-        default: return ""
+        case .invalidCredentials:
+            return "Domain: Invalid credentials provided by the user"
+            
+        case .userNotFound:
+            return "Domain: User not found in authentication service"
+            
+        case .emailNotConfirmed:
+            return "Domain: User email is not confirmed"
+            
+        case .otpExpired:
+            return "Domain: The OTP code has expired"
+            
+        case .tooManyRequests:
+            return "Domain: Rate limit exceeded (Too many requests)"
+            
+        case .authenticationNotImplemented:
+            return "Domain: Service authentication not implemented yet"
+            
+        case .refreshSession:
+            return "Domain: Session needs to be refreshed (Token expired)"
+            
+        case .userAlreadyExist:
+            return "Domain: Registration failed - User already exists"
+            
+        case .accessToken:
+            return "Domain: Access token is invalid or expired"
+            
+        case .unknown(let message):
+            return "Domain: Unknown error occurred - \(message)"
+        }
+    }
+    
+    // Only track domain errores
+    public var isShouldTrack: Bool {
+        switch self {
+        case .emailNotConfirmed, .invalidCredentials, .otpExpired:
+            return false
+            
+        default:
+            return true
         }
     }
 
