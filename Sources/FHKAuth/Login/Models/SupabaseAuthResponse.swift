@@ -25,6 +25,15 @@ public enum FHKDomainError: FHKError {
     case userAlreadyExist
     case accessToken
     case unknown(String)
+    
+    var logMessage: String {
+        switch self {
+        case .userNotFound: return "user not found autentication service"
+        case .emailNotConfirmed: return "user email not confirmed"
+        case .authenticationNotImplemented: return "service autentication not implemented"
+        default: return ""
+        }
+    }
 
     public static func from(errorCode: String) -> FHKDomainError {
         switch errorCode {
