@@ -60,6 +60,14 @@ public enum FHKDomainError: FHKError {
         }
     }
     
+    public var titleUI: String {
+        return ""
+    }
+    
+    public var messageUI: String {
+        return ""
+    }
+    
     // Only track domain errores
     public var isShouldTrack: Bool {
         switch self {
