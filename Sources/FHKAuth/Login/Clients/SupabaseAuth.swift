@@ -9,8 +9,9 @@ import Foundation
 import Supabase
 import FHKUtils
 import FHKCore
+import FHKInjections
 
-public protocol AuthProtocol: Sendable {
+public protocol AuthProtocol: FHKInjectableProtocol {
     func loginUser(email: String, password: String) async throws -> AuthResponseProtocol
     func logoutUser() async throws
     func refreshSession() async throws -> AuthResponseProtocol
@@ -22,16 +23,30 @@ public protocol AuthProtocol: Sendable {
 }
 
 public final class SupabaseAuth: AuthProtocol {
-    private let supabaseClient: SupabaseClient? = getSecureSupabaseClient()
+    // Properties injected
+    private let servicesAPI: any ServicesAPIProtocol
+    private let supabaseURL: URL
+    
+    public init() {
+        let api = inject.servicesAPI
+        self.servicesAPI = api
+        
+        do {
+            let urlString = try api.getURL(environment: .production, language: .es, serviceKey: .supabase)
+            guard let validURL = URL(string: urlString) else {
+                fatalError("FHK Error: Supabase URL is not valid")
+            }
+            self.supabaseURL = validURL
+            
+        } catch {
+            fatalError("FHK Error: Could not fetch URL from ServicesAPI")
+        }
+    }
 
     // MARK: - Login Authentication
     public func loginUser(email: String, password: String) async throws -> AuthResponseProtocol {
         
         do {
-            guard let client = supabaseClient else {
-                throw FHKDomainError.authenticationNotImplemented
-            }
-            
             let session = try await client.auth.signIn(email: email, password: password)
             return SupabaseAuthResponse(session: session)
         } catch {
@@ -47,10 +62,6 @@ public final class SupabaseAuth: AuthProtocol {
     // MARK: - Registration
     public func registerUser(email: String, password: String) async throws -> AuthResponse {
         do {
-            guard let client = supabaseClient else {
-                throw FHKDomainError.authenticationNotImplemented
-            }
-            
             let operation = try await client.auth.signUp(
                 email: email,
                 password: password
@@ -68,26 +79,19 @@ public final class SupabaseAuth: AuthProtocol {
     }
     
     public func logoutUser() async throws {
-        try await supabaseClient?.auth.signOut()
+        try await client.auth.signOut()
     }
 
     public func refreshSession() async throws -> AuthResponseProtocol {
-        guard let session = try await supabaseClient?.auth.refreshSession() else {
-            throw FHKDomainError.refreshSession
-        }
-
+        let session = try await client.auth.refreshSession()
         return SupabaseAuthResponse(session: session)
     }
 
     public var isUserAuthenticated: Bool {
-        return supabaseClient?.auth.currentUser != nil
+        return client.auth.currentUser != nil
     }
     
     public func setSession(accessToken: String) async throws {
-        guard let client = supabaseClient else {
-            throw FHKDomainError.authenticationNotImplemented
-        }
-        
         // Supabase necesita un Access Token para considerar que la sesión es válida.
         // El Refresh Token se puede dejar vacío si solo quieres rehidratar la sesión actual.
         try await client.auth.setSession(accessToken: accessToken, refreshToken: "")
@@ -96,21 +100,12 @@ public final class SupabaseAuth: AuthProtocol {
 
 extension SupabaseAuth {
     
-    public static func getSecureSupabaseClient() -> SupabaseClient? {
+    public var client: SupabaseClient {
         do {
-            let SUPABASE_BASE_URL = try ServicesAPI.getURL(serviceKey: .supabase)
             let anonKey = try SecureKeyManager().getAnonKey()
-            
-            guard let url = URL(string: SUPABASE_BASE_URL) else {
-                Logger.error("Invalid Supabase URL.")
-                return nil
-            }
-            
-            return SupabaseClient(supabaseURL: url, supabaseKey: anonKey)
-            
+            return SupabaseClient(supabaseURL: self.supabaseURL, supabaseKey: anonKey)
         } catch {
-            Logger.error("SupabaseAuth could not be initialized. Error decrypting the key: \(error)")
-            return nil
+            fatalError("FHK Error: Could not get Anon Key")
         }
     }
     
