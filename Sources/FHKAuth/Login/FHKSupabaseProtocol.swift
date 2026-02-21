@@ -11,16 +11,16 @@ import FHKUtils
 import FHKCore
 
 public protocol AuthServiceFactory: Sendable {
-    func makeAuthService(for platform: Login.AuthPlatform) throws -> any AuthProtocol
+    func makeAuthService(for platform: Login.AuthPlatform) throws -> any FHKSupabaseProtocol
 }
 
 public final class DefaultAuthServiceFactory: AuthServiceFactory {
     public init(){}
-    public func makeAuthService(for platform: Login.AuthPlatform) throws -> any AuthProtocol {
+    public func makeAuthService(for platform: Login.AuthPlatform) throws -> any FHKSupabaseProtocol {
         
         switch platform {
         case .supabase:
-            return SupabaseAuth()
+            return FHKSupabase()
             
         case .firebase:
             throw FHKDomainError.authenticationNotImplemented

@@ -11,7 +11,7 @@ import FHKUtils
 import FHKCore
 import FHKInjections
 
-public protocol AuthProtocol: FHKInjectableProtocol {
+public protocol FHKSupabaseProtocol: FHKInjectableProtocol {
     func loginUser(email: String, password: String) async throws -> AuthResponseProtocol
     func logoutUser() async throws
     func refreshSession() async throws -> AuthResponseProtocol
@@ -20,9 +20,10 @@ public protocol AuthProtocol: FHKInjectableProtocol {
 
     // MARK: - User Data
     var isUserAuthenticated: Bool { get }
+    var client: SupabaseClient { get }
 }
 
-public final class SupabaseAuth: AuthProtocol {
+public final class FHKSupabase: FHKSupabaseProtocol {
     // Properties injected
     private let servicesAPI: any ServicesAPIProtocol
     private let supabaseURL: URL
@@ -98,7 +99,7 @@ public final class SupabaseAuth: AuthProtocol {
     }
 }
 
-extension SupabaseAuth {
+public extension FHKSupabase {
     
     public var client: SupabaseClient {
         do {
