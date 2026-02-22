@@ -12,23 +12,16 @@ import FHKCore
 import FHKConfig
 import FHKInjections
 
-public protocol FHKLanguageManagerProtocol: FHKInjectableProtocol {
-    var selectedLanguage: String { get set }
-    var currentBundle: Bundle { get }
-    func changeLanguage(to language: String)
-    func languageTypeFromCode(_ string: String) -> LanguageType
-}
-
 public protocol FHKSupabaseProtocol: FHKInjectableProtocol {
     func loginUser(email: String, password: String) async throws -> AuthResponseProtocol
     func logoutUser() async throws
     func refreshSession() async throws -> AuthResponseProtocol
     func registerUser(email: String, password: String) async throws -> AuthResponse
     func setSession(accessToken: String) async throws
+    func getClient() async throws -> SupabaseClient
 
     // MARK: - User Data
-    var isUserAuthenticated: Bool { get }
-    var client: SupabaseClient { get }
+    var isUserAuthenticated: Bool { get async }
 }
 
 public final class FHKSupabase: FHKSupabaseProtocol {
@@ -44,10 +37,9 @@ public final class FHKSupabase: FHKSupabaseProtocol {
         self.servicesAPI = inject.servicesAPI
     }
     
-    // Calculamos la URL solo cuando se necesita
-    private var supabaseURL: URL {
-        let languageType = languageManager.languageTypeFromCode(languageManager.selectedLanguage)
-        let environment = configManager.getEnvironment()
+    func getSupabaseURL() async -> URL {
+        let languageType = await languageManager.languageTypeFromCode(languageManager.selectedLanguage)
+        let environment = await configManager.getEnvironment()
         
         do {
             let urlString = try servicesAPI.getURL(
@@ -90,7 +82,7 @@ public final class FHKSupabase: FHKSupabaseProtocol {
     public func loginUser(email: String, password: String) async throws -> AuthResponseProtocol {
         
         do {
-            let session = try await client.auth.signIn(email: email, password: password)
+            let session = try await getClient().auth.signIn(email: email, password: password)
             return SupabaseAuthResponse(session: session)
         } catch {
             
@@ -105,7 +97,7 @@ public final class FHKSupabase: FHKSupabaseProtocol {
     // MARK: - Registration
     public func registerUser(email: String, password: String) async throws -> AuthResponse {
         do {
-            let operation = try await client.auth.signUp(
+            let operation = try await getClient().auth.signUp(
                 email: email,
                 password: password
             )
@@ -122,34 +114,64 @@ public final class FHKSupabase: FHKSupabaseProtocol {
     }
     
     public func logoutUser() async throws {
-        try await client.auth.signOut()
+        try await getClient().auth.signOut()
     }
 
     public func refreshSession() async throws -> AuthResponseProtocol {
-        let session = try await client.auth.refreshSession()
+        let session = try await getClient().auth.refreshSession()
         return SupabaseAuthResponse(session: session)
     }
 
     public var isUserAuthenticated: Bool {
-        return client.auth.currentUser != nil
+        get async {
+            do {
+                let client = try await getClient()
+                return client.auth.currentUser != nil
+            } catch {
+                return false
+            }
+        }
     }
     
     public func setSession(accessToken: String) async throws {
         // Supabase necesita un Access Token para considerar que la sesión es válida.
         // El Refresh Token se puede dejar vacío si solo quieres rehidratar la sesión actual.
-        try await client.auth.setSession(accessToken: accessToken, refreshToken: "")
+        try await getClient().auth.setSession(accessToken: accessToken, refreshToken: "")
     }
 }
 
 public extension FHKSupabase {
     
-    public var client: SupabaseClient {
-        do {
-            let anonKey = try SecureKeyManager().getAnonKey()
-            return SupabaseClient(supabaseURL: self.supabaseURL, supabaseKey: anonKey)
-        } catch {
-            fatalError("FHK Error: Could not get Anon Key")
+//    public var client: SupabaseClient {
+//        do {
+//            let anonKey = try SecureKeyManager().getAnonKey()
+//            return SupabaseClient(supabaseURL: self.getSupabaseURL(), supabaseKey: anonKey)
+//        } catch {
+//            fatalError("FHK Error: Could not get Anon Key")
+//        }
+//    }
+    
+    func getClient() async throws -> SupabaseClient {
+        
+        // Pedimos los datos al MainActor (donde vive el LanguageManager)
+        // Solo "saltamos" al hilo principal para leer estas 2 variables
+        let (langCode, env) = await MainActor.run {
+            return (languageManager.selectedLanguage, configManager.getEnvironment())
         }
+        
+        let languageType = await MainActor.run {
+            languageManager.languageTypeFromCode(langCode)
+        }
+        
+        // Volvemos automáticamente al hilo de fondo para el resto
+        let urlString = try servicesAPI.getURL(
+            environment: env,
+            language: languageType,
+            serviceKey: .supabase
+        )
+        
+        let anonKey = try SecureKeyManager().getAnonKey()
+        return SupabaseClient(supabaseURL: URL(string: urlString)!, supabaseKey: anonKey)
     }
     
     func parseSupabaseError(_ error: Error) -> SupabaseApiError? {
