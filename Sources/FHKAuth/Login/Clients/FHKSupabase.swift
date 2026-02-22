@@ -9,7 +9,15 @@ import Foundation
 import Supabase
 import FHKUtils
 import FHKCore
+import FHKConfig
 import FHKInjections
+
+public protocol FHKLanguageManagerProtocol: FHKInjectableProtocol {
+    var selectedLanguage: String { get set }
+    var currentBundle: Bundle { get }
+    func changeLanguage(to language: String)
+    func languageTypeFromCode(_ string: String) -> LanguageType
+}
 
 public protocol FHKSupabaseProtocol: FHKInjectableProtocol {
     func loginUser(email: String, password: String) async throws -> AuthResponseProtocol
@@ -28,12 +36,22 @@ public final class FHKSupabase: FHKSupabaseProtocol {
     private let servicesAPI: any ServicesAPIProtocol
     private let supabaseURL: URL
     
+    // Injections Dependency
+    private let languageManager = inject.languageManager
+    private let configManager = inject.configManager
+    
     public init() {
         let api = inject.servicesAPI
         self.servicesAPI = api
         
         do {
-            let urlString = try api.getURL(environment: .production, language: .es, serviceKey: .supabase)
+            let languageSelected = languageManager.selectedLanguage
+            let languageType = languageManager.languageTypeFromCode(languageSelected)
+            let environmentType = configManager.getEnvironment()
+            
+            let urlString = try api.getURL(environment: configManager.getEnvironment(),
+                                           language: languageType,
+                                           serviceKey: .supabase)
             guard let validURL = URL(string: urlString) else {
                 fatalError("FHK Error: Supabase URL is not valid")
             }
