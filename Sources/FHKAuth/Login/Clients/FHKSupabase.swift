@@ -37,19 +37,25 @@ public final class FHKSupabase: FHKSupabaseProtocol {
     private let supabaseURL: URL
     
     // Injections Dependency
-    private let languageManager = inject.languageManager
-    private let configManager = inject.configManager
+//    private let languageManager = inject.languageManager
+//    private let configManager = inject.configManager
+    
+    private var languageManager: any FHKLanguageManagerProtocol { inject.languageManager }
+    private var configManager: any FHKConfigurationProtocol { inject.configManager }
     
     public init() {
         let api = inject.servicesAPI
         self.servicesAPI = api
         
+        let currentLanguageManager = inject.languageManager
+        let currentConfigManager = inject.configManager
+        
         do {
-            let languageSelected = languageManager.selectedLanguage
-            let languageType = languageManager.languageTypeFromCode(languageSelected)
-            let environmentType = configManager.getEnvironment()
+            let languageSelected = currentLanguageManager.selectedLanguage
+            let languageType = currentLanguageManager.languageTypeFromCode(languageSelected)
+            let environmentType = currentConfigManager.getEnvironment()
             
-            let urlString = try api.getURL(environment: configManager.getEnvironment(),
+            let urlString = try api.getURL(environment: currentConfigManager.getEnvironment(),
                                            language: languageType,
                                            serviceKey: .supabase)
             guard let validURL = URL(string: urlString) else {
