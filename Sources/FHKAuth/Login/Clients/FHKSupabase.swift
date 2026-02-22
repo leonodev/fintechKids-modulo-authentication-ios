@@ -32,41 +32,59 @@ public protocol FHKSupabaseProtocol: FHKInjectableProtocol {
 }
 
 public final class FHKSupabase: FHKSupabaseProtocol {
-    // Properties injected
+   
     private let servicesAPI: any ServicesAPIProtocol
-    private let supabaseURL: URL
+    //private let supabaseURL: URL
     
-    // Injections Dependency
-//    private let languageManager = inject.languageManager
-//    private let configManager = inject.configManager
-    
+    //  // Properties injected safe
     private var languageManager: any FHKLanguageManagerProtocol { inject.languageManager }
     private var configManager: any FHKConfigurationProtocol { inject.configManager }
     
     public init() {
-        let api = inject.servicesAPI
-        self.servicesAPI = api
-        
-        let currentLanguageManager = inject.languageManager
-        let currentConfigManager = inject.configManager
+        self.servicesAPI = inject.servicesAPI
+    }
+    
+    // Calculamos la URL solo cuando se necesita
+    private var supabaseURL: URL {
+        let languageType = languageManager.languageTypeFromCode(languageManager.selectedLanguage)
+        let environment = configManager.getEnvironment()
         
         do {
-            let languageSelected = currentLanguageManager.selectedLanguage
-            let languageType = currentLanguageManager.languageTypeFromCode(languageSelected)
-            let environmentType = currentConfigManager.getEnvironment()
-            
-            let urlString = try api.getURL(environment: currentConfigManager.getEnvironment(),
-                                           language: languageType,
-                                           serviceKey: .supabase)
-            guard let validURL = URL(string: urlString) else {
-                fatalError("FHK Error: Supabase URL is not valid")
-            }
-            self.supabaseURL = validURL
-            
+            let urlString = try servicesAPI.getURL(
+                environment: environment,
+                language: languageType,
+                serviceKey: .supabase
+            )
+            return URL(string: urlString)!
         } catch {
-            fatalError("FHK Error: Could not fetch URL from ServicesAPI")
+            fatalError("FHK Error: Could not fetch URL")
         }
     }
+    
+//    public init() {
+//        let api = inject.servicesAPI
+//        self.servicesAPI = api
+//        
+//        let currentLanguageManager = inject.languageManager
+//        let currentConfigManager = inject.configManager
+//        
+//        do {
+//            let languageSelected = currentLanguageManager.selectedLanguage
+//            let languageType = currentLanguageManager.languageTypeFromCode(languageSelected)
+//            let environmentType = currentConfigManager.getEnvironment()
+//            
+//            let urlString = try api.getURL(environment: currentConfigManager.getEnvironment(),
+//                                           language: languageType,
+//                                           serviceKey: .supabase)
+//            guard let validURL = URL(string: urlString) else {
+//                fatalError("FHK Error: Supabase URL is not valid")
+//            }
+//            self.supabaseURL = validURL
+//            
+//        } catch {
+//            fatalError("FHK Error: Could not fetch URL from ServicesAPI")
+//        }
+//    }
 
     // MARK: - Login Authentication
     public func loginUser(email: String, password: String) async throws -> AuthResponseProtocol {
