@@ -18,7 +18,7 @@ public protocol FHKSupabaseProtocol: FHKInjectableProtocol {
     func refreshSession() async throws -> AuthResponseProtocol
     func registerUser(email: String, password: String) async throws -> AuthResponse
     func setSession(accessToken: String) async throws
-    func getClient() throws -> SupabaseClient
+    func getClient() -> SupabaseClient
 
     // MARK: - User Data
     var isUserAuthenticated: Bool { get async }
@@ -112,18 +112,33 @@ public final class FHKSupabase: FHKSupabaseProtocol {
 
 public extension FHKSupabase {
 
-    func getClient() throws -> SupabaseClient {
+    func getClient() -> SupabaseClient {
         let (langCode, env) = (languageManager.selectedLanguage, configManager.getEnvironment())
         let languageType = languageManager.languageTypeFromCode(langCode)
         
-        let urlString = try servicesAPI.getURL(
-            environment: env,
-            language: languageType,
-            serviceKey: .supabase
-        )
-        
-        let anonKey = try SecureKeyManager().getAnonKey()
-        return SupabaseClient(supabaseURL: URL(string: urlString)!, supabaseKey: anonKey)
+        do {
+            let urlString = try servicesAPI.getURL(
+                environment: env,
+                language: languageType,
+                serviceKey: .supabase)
+            
+            let anonKey = try SecureKeyManager().getAnonKey()
+            
+            guard let url = URL(string: urlString) else {
+                fatalError("Supabase URL inválida: \(urlString)")
+            }
+            
+            return SupabaseClient(supabaseURL: url, supabaseKey: anonKey)
+            
+        } catch let error as APIConfigError {
+            fatalError("Error configuration de API: \(error)")
+            
+        } catch let error as SecurityError {
+            fatalError("Error getting AnonKey: \(error)")
+            
+        } catch {
+            fatalError("Error unexpected creating Supabase client: \(error)")
+        }
     }
     
     func parseSupabaseError(_ error: Error) -> SupabaseApiError? {
