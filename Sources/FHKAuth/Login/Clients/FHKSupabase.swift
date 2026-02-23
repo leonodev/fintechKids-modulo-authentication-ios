@@ -25,7 +25,7 @@ public protocol FHKSupabaseProtocol: FHKInjectableProtocol {
 }
 
 public final class FHKSupabase: FHKSupabaseProtocol {
-    //  // Properties computed injected safe
+    // Properties computed injected
     private var languageManager: any FHKLanguageManagerProtocol { inject.languageManager }
     private var configManager: any FHKConfigurationProtocol { inject.configManager }
    
