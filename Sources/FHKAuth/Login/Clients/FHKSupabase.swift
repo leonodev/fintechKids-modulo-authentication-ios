@@ -18,7 +18,7 @@ public protocol FHKSupabaseProtocol: FHKInjectableProtocol {
     func refreshSession() async throws -> AuthResponseProtocol
     func registerUser(email: String, password: String) async throws -> AuthResponse
     func setSession(accessToken: String) async throws
-    func getClient() async throws -> SupabaseClient
+    func getClient() throws -> SupabaseClient
 
     // MARK: - User Data
     var isUserAuthenticated: Bool { get async }
@@ -112,15 +112,9 @@ public final class FHKSupabase: FHKSupabaseProtocol {
 
 public extension FHKSupabase {
 
-    func getClient() async throws -> SupabaseClient {
-        
-        let (langCode, env) = await MainActor.run {
-            return (languageManager.selectedLanguage, configManager.getEnvironment())
-        }
-        
-        let languageType = await MainActor.run {
-            languageManager.languageTypeFromCode(langCode)
-        }
+    func getClient() throws -> SupabaseClient {
+        let (langCode, env) = (languageManager.selectedLanguage, configManager.getEnvironment())
+        let languageType = languageManager.languageTypeFromCode(langCode)
         
         let urlString = try servicesAPI.getURL(
             environment: env,
