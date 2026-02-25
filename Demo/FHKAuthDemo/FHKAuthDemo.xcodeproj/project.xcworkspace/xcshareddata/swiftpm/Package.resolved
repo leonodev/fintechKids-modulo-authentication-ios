@@ -20,30 +20,21 @@
       }
     },
     {
-      "identity" : "fintechkids-modulo-config-ios",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/leonodev/fintechKids-modulo-config-ios.git",
-      "state" : {
-        "branch" : "main",
-        "revision" : "4978b44caa8273b81593df72002e0619f09da464"
-      }
-    },
-    {
       "identity" : "fintechkids-modulo-core-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/leonodev/fintechKids-modulo-core-ios.git",
       "state" : {
         "branch" : "main",
-        "revision" : "c2b04cafa447516f25717b0d2aee4aaccfbe5b34"
+        "revision" : "32702342aa6a958b97c4a8fb5fb33b17d10e034f"
       }
     },
     {
-      "identity" : "fintechkids-modulo-designsystem-ios",
+      "identity" : "fintechkids-modulo-domain-ios",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/leonodev/fintechKids-modulo-designsystem-ios.git",
+      "location" : "https://github.com/leonodev/fintechKids-modulo-domain-ios.git",
       "state" : {
         "branch" : "main",
-        "revision" : "ad9517511cb080e876450c1efff737b1fb103217"
+        "revision" : "419fc7f69529f32346d7c97504cd87e9b27ed8ee"
       }
     },
     {
@@ -52,25 +43,7 @@
       "location" : "https://github.com/leonodev/fintechKids-modulo-injections-ios.git",
       "state" : {
         "branch" : "main",
-        "revision" : "ecab87f9f53fa30e344bf3f030f91c00e0cad097"
-      }
-    },
-    {
-      "identity" : "fintechkids-modulo-storage-ios",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/leonodev/fintechKids-modulo-storage-ios.git",
-      "state" : {
-        "branch" : "main",
-        "revision" : "c34c0a37ee9a2b47ebb46dc10e30f7bf558832e0"
-      }
-    },
-    {
-      "identity" : "fintechkids-modulo-utils-ios",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/leonodev/fintechKids-modulo-utils-ios.git",
-      "state" : {
-        "revision" : "133c1e36451b4a01de243388def3f0df30ffe79c",
-        "version" : "1.0.2"
+        "revision" : "47cb471b852fc763bdb7ed3f5748bcaff5b8e92c"
       }
     },
     {
@@ -78,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/firebase-ios-sdk.git",
       "state" : {
-        "revision" : "9b3aed4fa6226125305b82d4d86c715bef250785",
-        "version" : "12.9.0"
+        "revision" : "85560b48b0ff099ad83fe53d67df3c67fbc2b7a6",
+        "version" : "12.10.0"
       }
     },
     {
@@ -87,8 +60,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/googleads/google-ads-on-device-conversion-ios-sdk",
       "state" : {
-        "revision" : "35b601a60fbbea2de3ea461f604deaaa4d8bbd0c",
-        "version" : "3.2.0"
+        "revision" : "a5cd95c80e8efdd02155c6cea1cecf743bb683a5",
+        "version" : "3.3.0"
       }
     },
     {
@@ -96,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/GoogleAppMeasurement.git",
       "state" : {
-        "revision" : "2ffd220823f3716904733162e9ae685545c276d1",
-        "version" : "12.8.0"
+        "revision" : "68ba955e540dcff5e0805970ef4b1fd0150be100",
+        "version" : "12.10.0"
       }
     },
     {
@@ -155,15 +128,6 @@
       }
     },
     {
-      "identity" : "lottie-spm",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/airbnb/lottie-spm.git",
-      "state" : {
-        "revision" : "69faaefa7721fba9e434a52c16adf4329c9084db",
-        "version" : "4.6.0"
-      }
-    },
-    {
       "identity" : "nanopb",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/nanopb.git",
@@ -188,15 +152,6 @@
       "state" : {
         "revision" : "0f8bf83b55709e5530cd842a0185b9abba7a3c6c",
         "version" : "2.41.1"
-      }
-    },
-    {
-      "identity" : "swift-algorithms",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-algorithms.git",
-      "state" : {
-        "revision" : "87e50f483c54e6efd60e885f7f5aa946cee68023",
-        "version" : "1.2.1"
       }
     },
     {
@@ -242,15 +197,6 @@
       "state" : {
         "revision" : "45eb0224913ea070ec4fba17291b9e7ecf4749ca",
         "version" : "1.5.1"
-      }
-    },
-    {
-      "identity" : "swift-numerics",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-numerics.git",
-      "state" : {
-        "revision" : "0c0290ff6b24942dadb83a929ffaaa1481df04a2",
-        "version" : "1.1.1"
       }
     },
     {

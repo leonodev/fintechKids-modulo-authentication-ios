@@ -7,7 +7,7 @@
 
 import SwiftUI
 import FHKAuth
-import FHKStorage
+import FHKDomain
 
 struct LoginView: View {
     @StateObject var viewModel: LoginViewModel = LoginViewModel()
@@ -49,12 +49,7 @@ struct LoginView: View {
             }
             .sheet(isPresented: $showingSecurityInfo) {
                 securityInfoSheet
-            }
-            .onAppear {
-                Task {
-                    await viewModel.readAuthToken()
-                }
-            }
+            } 
         }
     }
 }

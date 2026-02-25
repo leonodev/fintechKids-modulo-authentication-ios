@@ -7,7 +7,6 @@
 
 import SwiftUI
 import FHKAuth
-import Supabase
 
 struct RegisterScreen: View {
     @StateObject var viewModel: RegisterScreenVM = RegisterScreenVM()

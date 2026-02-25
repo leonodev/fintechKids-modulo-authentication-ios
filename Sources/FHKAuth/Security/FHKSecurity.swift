@@ -8,20 +8,7 @@
 import Foundation
 import CommonCrypto
 import LocalAuthentication
-import FHKInjections
-
-public enum BiometryType {
-    case faceID
-    case touchID
-    case none
-}
-
-public protocol FHKSecurityProtocol: FHKInjectableProtocol {
-    func generateSecuritySeed() -> Data?
-    func hashPassword(_ password: String, securitySeed: Data) -> String?
-    func getBiometryType() -> BiometryType
-    var biometryIcon: String { get }
-}
+import FHKDomain
 
 public final class FHKSecurity: FHKSecurityProtocol {
     /// Paso 1.1: Generar una "SecuritySeed" única para cada usuario.

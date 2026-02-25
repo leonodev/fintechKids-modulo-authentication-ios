@@ -7,7 +7,6 @@
 
 import SwiftUI
 import FHKAuth
-import Supabase
 
 struct LoginScreen: View {
     @StateObject var viewModel: LoginScreenVM = LoginScreenVM()

@@ -7,22 +7,8 @@
 
 import Foundation
 import Supabase
-import FHKUtils
-import FHKCore
-import FHKConfig
 import FHKInjections
-
-public protocol FHKSupabaseProtocol: FHKInjectableProtocol {
-    func loginUser(email: String, password: String) async throws -> AuthResponseProtocol
-    func logoutUser() async throws
-    func refreshSession() async throws -> AuthResponseProtocol
-    func registerUser(email: String, password: String) async throws -> AuthResponse
-    func setSession(accessToken: String) async throws
-    func getClient() -> SupabaseClient
-
-    // MARK: - User Data
-    var isUserAuthenticated: Bool { get async }
-}
+import FHKDomain
 
 public final class FHKSupabase: FHKSupabaseProtocol {
     // Properties computed injected
@@ -42,7 +28,6 @@ public final class FHKSupabase: FHKSupabaseProtocol {
         do {
             let urlString = try servicesAPI.getURL(
                 environment: environment,
-                language: languageType,
                 serviceKey: .supabase
             )
             return URL(string: urlString)!
@@ -119,7 +104,6 @@ public extension FHKSupabase {
         do {
             let urlString = try servicesAPI.getURL(
                 environment: env,
-                language: languageType,
                 serviceKey: .supabase)
             
             let anonKey = try SecureKeyManager().getAnonKey()

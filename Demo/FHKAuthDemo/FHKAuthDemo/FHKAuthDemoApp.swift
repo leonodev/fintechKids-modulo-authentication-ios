@@ -8,6 +8,7 @@
 import SwiftUI
 import FHKInjections
 import FHKCore
+import FHKDomain
 
 @main
 struct FHKAuthDemoApp: App {

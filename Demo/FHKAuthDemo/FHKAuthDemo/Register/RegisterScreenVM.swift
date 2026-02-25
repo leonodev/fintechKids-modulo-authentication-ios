@@ -7,9 +7,8 @@
 
 import SwiftUI
 import Combine
-import Supabase
 import FHKAuth
-import FHKUtils
+import FHKDomain
 
 final class RegisterScreenVM: ObservableObject {
     private let loginActor: Login

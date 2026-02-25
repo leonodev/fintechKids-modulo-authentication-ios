@@ -7,13 +7,7 @@
 
 import Foundation
 import CryptoKit
-import FHKCore
-
-public enum SecurityError: Error {
-    case cryptoError(String)
-    case invalidKeyData
-}
-
+import FHKDomain
 
 final public class SecureKeyManager: Sendable {
     

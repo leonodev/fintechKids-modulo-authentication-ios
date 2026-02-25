@@ -7,9 +7,8 @@
 
 import SwiftUI
 import Combine
-import Supabase
 import FHKAuth
-import FHKUtils
+import FHKDomain
 
 final class LoginScreenVM: ObservableObject {
     private let loginActor: Login
@@ -32,7 +31,7 @@ final class LoginScreenVM: ObservableObject {
         errorMessage = nil
         
         do {
-            try await loginActor.loginUser(platform: .supabase, email: self.email, password: self.password)
+            let _ = try await loginActor.loginUser(platform: .supabase, email: self.email, password: self.password)
             isAuthenticated = true
         } catch let error as FHKDomainError {
             // Capturamos nuestros errores de dominio ya procesados

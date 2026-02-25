@@ -5,18 +5,12 @@
 //  Created by Fredy Leon on 10/12/25.
 //
 
-import Foundation
-import Supabase
-import FHKUtils
-import FHKCore
-
-public protocol AuthServiceFactory: Sendable {
-    func makeAuthService(for platform: Login.AuthPlatform) throws -> any FHKSupabaseProtocol
-}
+import FHKDomain
 
 public final class DefaultAuthServiceFactory: AuthServiceFactory {
     public init(){}
-    public func makeAuthService(for platform: Login.AuthPlatform) throws -> any FHKSupabaseProtocol {
+    
+    public func makeAuthService(for platform: AuthPlatform) throws -> any FHKSupabaseProtocol {
         
         switch platform {
         case .supabase:
@@ -30,11 +24,6 @@ public final class DefaultAuthServiceFactory: AuthServiceFactory {
 
 
 public actor Login {
-    
-    public enum AuthPlatform {
-        case supabase
-        case firebase
-    }
     
     private let factory: any AuthServiceFactory
     public var isAuthenticated: Bool = false

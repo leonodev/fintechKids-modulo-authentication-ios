@@ -6,9 +6,7 @@
 //
 
 import FHKInjections
-import FHKConfig
-import FHKCore
-import FHKStorage
+import FHKDomain
 
 public extension DependenciesInjection {
     

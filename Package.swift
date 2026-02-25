@@ -21,11 +21,9 @@ let package = Package(
         .package(url: "https://github.com/leonodev/fintechKids-modulo-utils-ios.git",
                 .upToNextMajor(from: "1.0.2")),
         
+        .package(url: "https://github.com/leonodev/fintechKids-modulo-domain-ios.git", branch: "main"),
+        
         .package(url: "https://github.com/leonodev/fintechKids-modulo-core-ios.git", branch: "main"),
-        
-        .package(url: "https://github.com/leonodev/fintechKids-modulo-config-ios.git", branch: "main"),
-        
-        .package(url: "https://github.com/leonodev/fintechKids-modulo-storage-ios.git", branch: "main"),
         
         .package(url: "https://github.com/leonodev/fintechKids-modulo-injections-ios.git", branch: "main")
     ],
@@ -35,10 +33,8 @@ let package = Package(
             dependencies: [
                 // Modules
                 .product(name: "Supabase", package: "supabase-swift"),
-                .product(name: "FHKUtils", package: "fintechKids-modulo-utils-ios"),
+                .product(name: "FHKDomain", package: "fintechKids-modulo-domain-ios"),
                 .product(name: "FHKCore", package: "fintechKids-modulo-core-ios"),
-                .product(name: "FHKConfig", package: "fintechKids-modulo-config-ios"),
-                .product(name: "FHKStorage", package: "fintechKids-modulo-storage-ios"),
                 .product(name: "FHKInjections", package: "fintechKids-modulo-injections-ios")
             ],
             resources: [.process("Resources")]
