@@ -16,9 +16,11 @@ public final class FHKSupabase: FHKSupabaseProtocol {
     private var configManager: any FHKConfigurationProtocol { inject.configManager }
    
     private let servicesAPI: any ServicesAPIProtocol
+    private let country: Countries
 
-    public init() {
+    public init(country: Countries) {
         self.servicesAPI = inject.servicesAPI
+        self.country = country
     }
     
     func getSupabaseURL() async -> URL {
@@ -28,6 +30,7 @@ public final class FHKSupabase: FHKSupabaseProtocol {
         do {
             let urlString = try servicesAPI.getURL(
                 environment: environment,
+                country: self.country,
                 serviceKey: .supabase
             )
             return URL(string: urlString)!
@@ -104,6 +107,7 @@ public extension FHKSupabase {
         do {
             let urlString = try servicesAPI.getURL(
                 environment: env,
+                country: self.country,
                 serviceKey: .supabase)
             
             let anonKey = try SecureKeyManager().getAnonKey()

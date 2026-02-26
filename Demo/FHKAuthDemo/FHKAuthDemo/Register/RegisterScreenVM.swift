@@ -21,7 +21,7 @@ final class RegisterScreenVM: ObservableObject {
     // Estado de la sesión
     @Published var isRegistered = false
    
-    init(loginActor: Login = Login(factory: DefaultAuthServiceFactory())) {
+    init(loginActor: Login = Login(factory: DefaultAuthServiceFactory(), country: .spanish)) {
         self.loginActor = loginActor
     }
     

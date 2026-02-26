@@ -21,7 +21,7 @@ final class LoginScreenVM: ObservableObject {
     // Estado de la sesión
     @Published var isAuthenticated = false
    
-    init(loginActor: Login = Login(factory: DefaultAuthServiceFactory())) {
+    init(loginActor: Login = Login(factory: DefaultAuthServiceFactory(), country: .spanish)) {
         self.loginActor = loginActor
     }
     

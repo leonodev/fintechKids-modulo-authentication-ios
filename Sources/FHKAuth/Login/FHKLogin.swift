@@ -10,11 +10,11 @@ import FHKDomain
 public final class DefaultAuthServiceFactory: AuthServiceFactory {
     public init(){}
     
-    public func makeAuthService(for platform: AuthPlatform) throws -> any FHKSupabaseProtocol {
+    public func makeAuthService(for platform: AuthPlatform, country: Countries) throws -> any FHKSupabaseProtocol {
         
         switch platform {
         case .supabase:
-            return FHKSupabase()
+            return FHKSupabase(country: country)
             
         case .firebase:
             throw FHKDomainError.authenticationNotImplemented
@@ -26,14 +26,16 @@ public final class DefaultAuthServiceFactory: AuthServiceFactory {
 public actor Login {
     
     private let factory: any AuthServiceFactory
+    private let country: Countries
     public var isAuthenticated: Bool = false
     
-    public init(factory: any AuthServiceFactory) {
+    public init(factory: any AuthServiceFactory, country: Countries) {
         self.factory = factory
+        self.country = country
     }
     
     public func loginUser(platform: AuthPlatform, email: String, password: String) async throws -> String {
-        let service = try factory.makeAuthService(for: platform)
+        let service = try factory.makeAuthService(for: platform, country: self.country)
         
         let response = try await service.loginUser(email: email, password: password)
         self.isAuthenticated = response.accessToken != nil
@@ -46,14 +48,14 @@ public actor Login {
     }
     
     public func registerUser(platform: AuthPlatform, email: String, password: String) async throws {
-        let service = try factory.makeAuthService(for: platform)
+        let service = try factory.makeAuthService(for: platform, country: self.country)
        
         let response = try await service.registerUser(email: email, password: password)
         self.isAuthenticated = ((response.user.identities?.isEmpty) != nil)
     }
     
     public func restoreSession(platform: AuthPlatform, token: String) async throws {
-        let service = try factory.makeAuthService(for: platform)
+        let service = try factory.makeAuthService(for: platform, country: self.country)
         
         // Llamamos al nuevo método que acabamos de crear
         try await service.setSession(accessToken: token)
