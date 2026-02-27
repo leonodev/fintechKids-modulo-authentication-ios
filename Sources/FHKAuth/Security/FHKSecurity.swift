@@ -25,50 +25,6 @@ public final class FHKSecurity: FHKSecurityProtocol {
         }
     }
     
-    public func generateSecuritySeed() -> Data? {
-        var data = Data(count: 16)
-        let status = data.withUnsafeMutableBytes { bytes in
-            guard let baseAddress = bytes.baseAddress else { return Int32(errSecInternalComponent) }
-            return SecRandomCopyBytes(kSecRandomDefault, 16, baseAddress)
-        }
-        
-        return status == errSecSuccess ? data : nil
-    }
-
-    /// Motor of Hasheo (PBKDF2).
-    /// Convierte la contraseña en algo ilegible.
-    public func hashPassword(_ password: String, securitySeed: Data) -> String? {
-        guard let passwordData = password.data(using: .utf8) else { return nil }
-        
-        var derivedKey = Data(count: 32)
-        
-        let status = derivedKey.withUnsafeMutableBytes { derivedKeyBytes in
-            securitySeed.withUnsafeBytes { seedBytes in
-                passwordData.withUnsafeBytes { passwordBytes in
-                    
-                    guard let dKeyAddr = derivedKeyBytes.baseAddress?.assumingMemoryBound(to: UInt8.self),
-                          let seedAddr = seedBytes.baseAddress?.assumingMemoryBound(to: UInt8.self),
-                          let passAddr = passwordBytes.baseAddress?.assumingMemoryBound(to: UInt8.self)
-                    else { return Int32(kCCMemoryFailure) }
-                    
-                    return CCKeyDerivationPBKDF(
-                        CCPBKDFAlgorithm(kCCPBKDF2),
-                        passAddr,           // We use the secure address
-                        passwordData.count,
-                        seedAddr,           // We use the secure address of the "seed"
-                        securitySeed.count,
-                        CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA256),
-                        10000,
-                        dKeyAddr,           // We used the secure exit route
-                        32
-                    )
-                }
-            }
-        }
-        
-        return status == kCCSuccess ? derivedKey.base64EncodedString() : nil
-    }
-    
     public func getBiometryType() -> BiometryType {
         let context = LAContext()
         var error: NSError?
