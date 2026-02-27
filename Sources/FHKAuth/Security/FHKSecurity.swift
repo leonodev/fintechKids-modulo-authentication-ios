@@ -12,10 +12,9 @@ import LocalAuthentication
 import FHKDomain
 
 public final class FHKSecurity: FHKSecurityProtocol {
-    /// Paso 1.1: Generar una "SecuritySeed" única para cada usuario.
-    /// Esto evita que dos contraseñas iguales generen el mismo hash.
-    ///
-    
+    /// Generate a unique "SecuritySeed" for each user.
+    /// This prevents two identical passwords from generating the same hash.
+ 
     public init() {}
     
     public var biometryIcon: String {
@@ -36,19 +35,17 @@ public final class FHKSecurity: FHKSecurityProtocol {
         return status == errSecSuccess ? data : nil
     }
 
-    /// Paso 1.2: El motor de Hasheo (PBKDF2).
+    /// Motor of Hasheo (PBKDF2).
     /// Convierte la contraseña en algo ilegible.
     public func hashPassword(_ password: String, securitySeed: Data) -> String? {
-        // 1. Desenvolvimiento seguro de los datos de la contraseña
         guard let passwordData = password.data(using: .utf8) else { return nil }
         
         var derivedKey = Data(count: 32)
         
         let status = derivedKey.withUnsafeMutableBytes { derivedKeyBytes in
             securitySeed.withUnsafeBytes { seedBytes in
-                passwordData.withUnsafeBytes { passwordBytes in // También tratamos la pass como bytes
+                passwordData.withUnsafeBytes { passwordBytes in
                     
-                    // Usamos guard let para evitar el "!" en los baseAddress
                     guard let dKeyAddr = derivedKeyBytes.baseAddress?.assumingMemoryBound(to: UInt8.self),
                           let seedAddr = seedBytes.baseAddress?.assumingMemoryBound(to: UInt8.self),
                           let passAddr = passwordBytes.baseAddress?.assumingMemoryBound(to: UInt8.self)
@@ -76,12 +73,12 @@ public final class FHKSecurity: FHKSecurityProtocol {
         let context = LAContext()
         var error: NSError?
         
-        // Verificamos si el hardware está disponible y configurado
+        // We check if the hardware is available and configured
         guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
             return .none
         }
         
-        // Una vez validado, preguntamos qué tipo específico es
+        // Once validated, we ask what specific type it is
         switch context.biometryType {
         case .faceID:
             return .faceID
