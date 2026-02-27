@@ -10,7 +10,8 @@ import Supabase
 import FHKInjections
 import FHKDomain
 
-public final class FHKSupabase: FHKSupabaseProtocol {
+public final class FHKSupabase: FHKAuthProtocol {
+ 
     // Properties computed injected
     private var languageManager: any FHKLanguageManagerProtocol { inject.languageManager }
     private var configManager: any FHKConfigurationProtocol { inject.configManager }
@@ -40,11 +41,10 @@ public final class FHKSupabase: FHKSupabaseProtocol {
     }
 
     // MARK: - Login Authentication
-    public func loginUser(email: String, password: String) async throws -> AuthResponseProtocol {
-        
+    public func login(email: String, password: String) async throws -> FHKUserSession {
         do {
             let session = try await getClient().auth.signIn(email: email, password: password)
-            return SupabaseAuthResponse(session: session)
+            return try session.toDomain()
         } catch {
             if let authError = error as? AuthError {
                 throw mapToDomainError(authError)
@@ -55,14 +55,14 @@ public final class FHKSupabase: FHKSupabaseProtocol {
     }
     
     // MARK: - Registration
-    public func registerUser(email: String, password: String) async throws -> AuthResponse {
+    public func register(email: String, password: String) async throws -> FHKUserSession {
         do {
             let operation = try await getClient().auth.signUp(
                 email: email,
                 password: password
             )
             
-            return operation
+            return try operation.toDomain()
             
         } catch {
             if let authError = error as? AuthError {
@@ -73,13 +73,13 @@ public final class FHKSupabase: FHKSupabaseProtocol {
         }
     }
     
-    public func logoutUser() async throws {
+    public func logout() async throws {
         try await getClient().auth.signOut()
     }
 
-    public func refreshSession() async throws -> AuthResponseProtocol {
+    public func refreshSession() async throws -> FHKUserSession {
         let session = try await getClient().auth.refreshSession()
-        return SupabaseAuthResponse(session: session)
+        return session.toDomain()
     }
 
     public var isUserAuthenticated: Bool {

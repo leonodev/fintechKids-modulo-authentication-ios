@@ -10,7 +10,7 @@ import FHKDomain
 public final class DefaultAuthServiceFactory: AuthServiceFactory {
     public init(){}
     
-    public func makeAuthService(for platform: AuthPlatform, country: Countries) throws -> any FHKSupabaseProtocol {
+    public func makeAuthService(for platform: AuthPlatform, country: Countries) throws -> any FHKAuthProtocol {
         
         switch platform {
         case .supabase:
@@ -37,7 +37,7 @@ public actor Login {
     public func loginUser(platform: AuthPlatform, email: String, password: String) async throws -> String {
         let service = try factory.makeAuthService(for: platform, country: self.country)
         
-        let response = try await service.loginUser(email: email, password: password)
+        let response = try await service.login(email: email, password: password)
         self.isAuthenticated = response.accessToken != nil
         
         guard let token = response.accessToken else {
@@ -50,8 +50,13 @@ public actor Login {
     public func registerUser(platform: AuthPlatform, email: String, password: String) async throws {
         let service = try factory.makeAuthService(for: platform, country: self.country)
        
-        let response = try await service.registerUser(email: email, password: password)
-        self.isAuthenticated = ((response.user.identities?.isEmpty) != nil)
+        let response = try await service.register(email: email, password: password)
+        
+        self.isAuthenticated = response.hasActiveSession
+        
+        if !response.hasActiveSession {
+            print("El usuario se creó, pero debe confirmar su email para tener una sesión activa")
+        }
     }
     
     public func restoreSession(platform: AuthPlatform, token: String) async throws {
