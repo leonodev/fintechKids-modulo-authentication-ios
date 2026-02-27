@@ -25,14 +25,6 @@ struct MenuNavigationOptions: View {
                 NavigationLink("KeyChain Validation") {
                     LoginView()
                 }
-                
-                NavigationLink("Login Supabase") {
-                    LoginScreen()
-                }
-                
-                NavigationLink("Register Supabase") {
-                    RegisterScreen()
-                }
             }
             .navigationTitle("FHK Auth Demo")
         }
