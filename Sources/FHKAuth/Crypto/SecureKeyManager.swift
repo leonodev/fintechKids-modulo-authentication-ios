@@ -9,7 +9,9 @@ import Foundation
 import CryptoKit
 import FHKDomain
 
-final public class SecureKeyManager: Sendable {
+final public class SecureKeyManager: SecureKeyProtocol {
+    
+    public init(){}
     
     // Revert secret (XOR)
     private func deobfuscate(bytes: [UInt8], key: UInt8) -> [UInt8] {
