@@ -129,13 +129,13 @@ public extension FHKSupabase {
         }
     }
     
-    func parseSupabaseError(_ error: Error) -> SupabaseApiError? {
+    func parseSupabaseError(_ error: Error) -> FHKApiError? {
         guard let authError = error as? AuthError else { return nil }
         
         switch authError {
         case .api(let message, let errorCode, let data, let response):
             
-            return SupabaseApiError(
+            return FHKApiError(
                 code: response.statusCode,
                 errorCode: errorCode.rawValue,
                 msg: message
