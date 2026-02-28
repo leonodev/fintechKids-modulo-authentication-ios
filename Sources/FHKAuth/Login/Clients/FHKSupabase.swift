@@ -7,7 +7,6 @@
 
 import Foundation
 import Supabase
-import FHKInjections
 import FHKDomain
 
 public final class FHKSupabase: FHKAuthProtocol {
