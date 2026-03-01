@@ -20,9 +20,10 @@ let package = Package(
         
         // Modules Allow Layers Inferior
         .package(url: "https://github.com/leonodev/fintechKids-modulo-utils-ios.git",
-                .upToNextMajor(from: "1.0.2")),
+                 branch: "main"),
         
-        .package(url: "https://github.com/leonodev/fintechKids-modulo-domain-ios.git", branch: "main")
+        .package(url: "https://github.com/leonodev/fintechKids-modulo-domain-ios.git",
+                 branch: "main")
     ],
     targets: [
         .target(
@@ -30,9 +31,9 @@ let package = Package(
             dependencies: [
                 //  Modules Allow Layers Inferior
                 .product(name: "Supabase", package: "supabase-swift"),
-                .product(name: "FHKDomain", package: "fintechKids-modulo-domain-ios")
-            ],
-            resources: [.process("Resources")]
+                .product(name: "FHKDomain", package: "fintechKids-modulo-domain-ios"),
+                .product(name: "FHKUtils", package: "fintechKids-modulo-utils-ios")
+            ]
         ),
         .testTarget(
             name: "FHKAuthTests",

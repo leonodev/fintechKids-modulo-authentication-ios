@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FHKAuth
+import FHKUtils
 
 struct SimpleEmailValidationView: View {
     @State private var email: String = ""
@@ -24,13 +25,13 @@ struct SimpleEmailValidationView: View {
                     .autocorrectionDisabled(true)
                     .keyboardType(.emailAddress)
                 
-                if !email.isEmpty {
-                    let result = email.emailValidation
-                    Text(result.message)
-                        .font(.caption)
-                        .foregroundColor(result.isValid ? .green : .red)
-                        .padding(.horizontal, 8)
-                }
+//                if !email.isEmpty {
+//                    let isValidEmail = email.isValidEmail
+//                    Text(isValidEmail ? "Email valid" : "Email invalid")
+//                        .font(.caption)
+//                        .foregroundColor(isValidEmail ? .green : .red)
+//                        .padding(.horizontal, 8)
+//                }
             }
             .padding(.horizontal)
             
