@@ -33,10 +33,10 @@ public final class FHKSupabase: FHKAuthProtocol {
             )
             
             let familyData: [String: String] = [
-                "email_parent": email,
-                "name_family": familyName.lowercased()
+                DB.TABLE_FAMILIES.COLUMN.emailParent: email,
+                DB.TABLE_FAMILIES.COLUMN.nameFamily: familyName.lowercased()
             ]
-            
+    
             try await client
                 .from(DB.TABLE_FAMILIES.NAME)
                 .insert(familyData)
