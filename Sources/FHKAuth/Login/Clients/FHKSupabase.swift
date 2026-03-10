@@ -25,14 +25,24 @@ public final class FHKSupabase: FHKAuthProtocol {
         }
     }
 
-    public func register(email: String, password: String) async throws -> FHKUserSession {
+    public func register(email: String, password: String, familyName: String) async throws -> FHKUserSession {
         do {
-            let operation = try await client.auth.signUp(
+            let signUp = try await client.auth.signUp(
                 email: email,
                 password: password
             )
             
-            return try operation.toDomain()
+            let familyData: [String: String] = [
+                "email_parent": email,
+                "name_family": familyName.lowercased()
+            ]
+            
+            try await client
+                .from(DB.TABLE_FAMILIES.NAME)
+                .insert(familyData)
+                .execute()
+            
+            return try signUp.toDomain()
             
         } catch {
             throw handleAuthError(error)
