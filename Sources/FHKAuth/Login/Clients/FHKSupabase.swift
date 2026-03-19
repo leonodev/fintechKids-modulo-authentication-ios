@@ -8,8 +8,9 @@
 import Foundation
 import Supabase
 import FHKDomain
+import PostgREST
 
-public final class FHKSupabase: FHKAuthProtocol {
+public final class FHKSupabase: FHKAuthProtocol, FHKSupabaseErrorProtocol {
     private let client: SupabaseClient
 
     public init(client: SupabaseClient) {
@@ -74,6 +75,11 @@ private extension FHKSupabase {
     func handleAuthError(_ error: Error) -> Error {
         if let authError = error as? AuthError {
             return mapToDomainError(authError)
+        }
+        
+        if let authError = error as? PostgrestError {
+            let errorPostgres = mapPostgresError(authError.code ?? "", message: authError.message)
+            return errorPostgres
         }
         return FHKSupabaseError.unknown(error.localizedDescription)
     }
