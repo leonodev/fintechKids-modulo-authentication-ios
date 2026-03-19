@@ -75,13 +75,13 @@ private extension FHKSupabase {
         if let authError = error as? AuthError {
             return mapToDomainError(authError)
         }
-        return FHKDomainError.unknown(error.localizedDescription)
+        return FHKSupabaseError.unknown(error.localizedDescription)
     }
     
-    func mapToDomainError(_ error: AuthError) -> FHKDomainError {
+    func mapToDomainError(_ error: AuthError) -> FHKSupabaseError {
         switch error {
         case .api(_, let errorCode, _, _):
-            return FHKDomainError.from(errorCode: errorCode.rawValue)
+            return FHKSupabaseError.from(errorCode: errorCode.rawValue)
         default:
             return .unknown(error.localizedDescription)
         }
