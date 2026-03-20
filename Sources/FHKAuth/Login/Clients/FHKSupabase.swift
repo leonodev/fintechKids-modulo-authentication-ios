@@ -18,28 +18,26 @@ public final class FHKSupabase: FHKAuthProtocol, FHKSupabaseErrorProtocol {
         self.client = client
     }
     
-    public func login(email: String, password: String) async throws -> FHKUserSession {
+    public func login(loginEntity: LoginEntity) async throws -> FHKUserSession {
         do {
-            let session = try await client.auth.signIn(email: email, password: password)
+            let session = try await client.auth.signIn(email: loginEntity.email,
+                                                       password: loginEntity.password)
             return session.toDomain()
         } catch {
-            let credentialsLog = ["email": email, "password": password]
-            let context = credentialsLog.toSafeLogString()
-            
-            throw handleAuthError(error, context: context)
+            throw handleAuthError(error, context: loginEntity.toSafeLogString())
         }
     }
 
-    public func register(email: String, password: String, familyName: String) async throws -> FHKUserSession {
+    public func register(registerEntity: RegisterUserEntity) async throws -> FHKUserSession {
         do {
             let signUp = try await client.auth.signUp(
-                email: email,
-                password: password
+                email: registerEntity.email,
+                password: registerEntity.password
             )
             
             let familyData: [String: String] = [
-                DB.TABLE_FAMILIES.COLUMN.emailParent: email,
-                DB.TABLE_FAMILIES.COLUMN.nameFamily: familyName.lowercased()
+                DB.TABLE_FAMILIES.COLUMN.emailParent: registerEntity.email,
+                DB.TABLE_FAMILIES.COLUMN.nameFamily: registerEntity.familyName.lowercased()
             ]
     
             try await client
@@ -50,12 +48,7 @@ public final class FHKSupabase: FHKAuthProtocol, FHKSupabaseErrorProtocol {
             return try signUp.toDomain()
             
         } catch {
-            let registerLog = [
-                "email": email,
-                "password": password,
-                "familyName": familyName
-            ]
-            throw handleAuthError(error, context: registerLog.toSafeLogString())
+            throw handleAuthError(error, context: registerEntity.toSafeLogString())
         }
     }
     
