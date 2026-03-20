@@ -7,8 +7,9 @@
 
 import Foundation
 import Supabase
-import FHKDomain
 import PostgREST
+import FHKDomain
+import FHKUtils
 
 public final class FHKSupabase: FHKAuthProtocol, FHKSupabaseErrorProtocol {
     private let client: SupabaseClient
@@ -22,7 +23,10 @@ public final class FHKSupabase: FHKAuthProtocol, FHKSupabaseErrorProtocol {
             let session = try await client.auth.signIn(email: email, password: password)
             return session.toDomain()
         } catch {
-            throw handleAuthError(error)
+            let credentialsLog = ["email": email, "password": password]
+            let context = credentialsLog.toSafeLogString()
+            
+            throw handleAuthError(error, context: context)
         }
     }
 
@@ -46,7 +50,12 @@ public final class FHKSupabase: FHKAuthProtocol, FHKSupabaseErrorProtocol {
             return try signUp.toDomain()
             
         } catch {
-            throw handleAuthError(error)
+            let registerLog = [
+                "email": email,
+                "password": password,
+                "familyName": familyName
+            ]
+            throw handleAuthError(error, context: registerLog.toSafeLogString())
         }
     }
     
@@ -72,9 +81,9 @@ public final class FHKSupabase: FHKAuthProtocol, FHKSupabaseErrorProtocol {
 
 private extension FHKSupabase {
     
-    func handleAuthError(_ error: Error) -> Error {
+    func handleAuthError(_ error: Error, context: String? = nil) -> Error {
         if let authError = error as? AuthError {
-            return mapToDomainError(authError)
+            return mapToDomainError(authError, context: context)
         }
         
         if let authError = error as? PostgrestError {
@@ -84,10 +93,20 @@ private extension FHKSupabase {
         return FHKSupabaseError.unknown(error.localizedDescription)
     }
     
-    func mapToDomainError(_ error: AuthError) -> FHKSupabaseError {
+    func mapToDomainError(_ error: AuthError, context: String?) -> FHKSupabaseError {
+        
         switch error {
         case .api(_, let errorCode, _, _):
-            return FHKSupabaseError.from(errorCode: errorCode.rawValue)
+            let baseError = FHKSupabaseError.from(errorCode: errorCode.rawValue)
+            
+            if case .invalidCredentials = baseError {
+                return .invalidCredentials(context: context)
+            }
+            if case .userAlreadyExists = baseError {
+                return .userAlreadyExists(context: context)
+            }
+            
+            return baseError
         default:
             return .unknown(error.localizedDescription)
         }
