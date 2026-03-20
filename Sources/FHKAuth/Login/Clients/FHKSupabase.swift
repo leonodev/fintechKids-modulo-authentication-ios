@@ -87,7 +87,7 @@ private extension FHKSupabase {
         }
         
         if let authError = error as? PostgrestError {
-            let errorPostgres = mapPostgresError(authError.code ?? "", message: authError.message)
+            let errorPostgres = mapPostgresError(authError.code ?? "", message: context ?? "")
             return errorPostgres
         }
         return FHKSupabaseError.unknown(error.localizedDescription)
