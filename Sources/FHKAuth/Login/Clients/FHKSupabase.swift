@@ -22,7 +22,8 @@ public final class FHKSupabase: FHKAuthProtocol, FHKSupabaseErrorProtocol {
         do {
             let session = try await client.auth.signIn(email: loginEntity.email,
                                                        password: loginEntity.password)
-            return session.toDomain()
+            let pin = try await fetchAprovedPin(parentEmail: loginEntity.email)
+            return session.toDomain(pinApprove: pin)
         } catch {
             throw handleAuthError(error, context: loginEntity.toSafeLogString())
         }
@@ -37,7 +38,8 @@ public final class FHKSupabase: FHKAuthProtocol, FHKSupabaseErrorProtocol {
             
             let familyData: [String: String] = [
                 DB.TABLE_FAMILIES.COLUMN.emailParent: registerEntity.email,
-                DB.TABLE_FAMILIES.COLUMN.nameFamily: registerEntity.familyName.lowercased()
+                DB.TABLE_FAMILIES.COLUMN.nameFamily: registerEntity.familyName.lowercased(),
+                DB.TABLE_FAMILIES.COLUMN.approvePin: registerEntity.approvePIN
             ]
     
             try await client
@@ -45,7 +47,7 @@ public final class FHKSupabase: FHKAuthProtocol, FHKSupabaseErrorProtocol {
                 .insert(familyData)
                 .execute()
             
-            return try signUp.toDomain()
+            return try signUp.toDomain(pinApprove: registerEntity.approvePIN)
             
         } catch {
             throw handleAuthError(error, context: registerEntity.toSafeLogString())
@@ -56,9 +58,10 @@ public final class FHKSupabase: FHKAuthProtocol, FHKSupabaseErrorProtocol {
         try await client.auth.signOut()
     }
     
-    public func refreshSession() async throws -> FHKUserSession {
+    public func refreshSession(emailParent: String) async throws -> FHKUserSession {
         let session = try await client.auth.refreshSession()
-        return session.toDomain()
+        let pin = try await fetchAprovedPin(parentEmail: emailParent)
+        return session.toDomain(pinApprove: pin)
     }
 
     public var isUserAuthenticated: Bool {
@@ -72,6 +75,25 @@ public final class FHKSupabase: FHKAuthProtocol, FHKSupabaseErrorProtocol {
     }  
 }
 
+// MARK: Private Methods
+private extension FHKSupabase {
+    
+    func fetchAprovedPin(parentEmail: String) async throws -> String {
+        do {
+            return try await client
+                .from(DB.TABLE_FAMILIES.NAME)
+                .select(DB.TABLE_FAMILIES.COLUMN.approvePin)
+                .eq(DB.TABLE_FAMILIES.COLUMN.emailParent, value: parentEmail)
+                .single()
+                .execute()
+                .value
+        } catch {
+            throw FHKSupabaseError.unknown(error.localizedDescription)
+        }
+    }
+}
+
+// MARK: Handle Errors
 private extension FHKSupabase {
     
     func handleAuthError(_ error: Error, context: String? = nil) -> Error {
