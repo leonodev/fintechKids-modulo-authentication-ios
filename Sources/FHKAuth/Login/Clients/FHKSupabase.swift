@@ -80,7 +80,7 @@ private extension FHKSupabase {
     
     func fetchAprovedPin(parentEmail: String) async throws -> String {
         do {
-            let pin: String = try await client
+            let result: FamilyPinResponse = try await client
                 .from(DB.TABLE_FAMILIES.NAME)
                 .select(DB.TABLE_FAMILIES.COLUMN.approvePin)
                 .eq(DB.TABLE_FAMILIES.COLUMN.emailParent, value: parentEmail)
@@ -88,7 +88,7 @@ private extension FHKSupabase {
                 .execute()
                 .value
             
-            return pin
+            return result.approve_pin
         } catch {
             throw FHKSupabaseError.unknown(error.localizedDescription)
         }
@@ -128,4 +128,9 @@ private extension FHKSupabase {
             return .unknown(error.localizedDescription)
         }
     }
+}
+
+
+struct FamilyPinResponse: Decodable {
+    let approve_pin: String
 }
