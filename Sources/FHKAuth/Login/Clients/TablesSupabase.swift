@@ -14,6 +14,7 @@ public struct DB {
             public static let createdAt = "created_at"
             public static let nameFamily = "name_family"
             public static let emailParent = "email_parent"
+            public static let approvePin = "approve_pin"
         }
     }
 }
