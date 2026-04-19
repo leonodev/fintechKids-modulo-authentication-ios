@@ -80,13 +80,15 @@ private extension FHKSupabase {
     
     func fetchAprovedPin(parentEmail: String) async throws -> String {
         do {
-            return try await client
+            let pin: String = try await client
                 .from(DB.TABLE_FAMILIES.NAME)
                 .select(DB.TABLE_FAMILIES.COLUMN.approvePin)
                 .eq(DB.TABLE_FAMILIES.COLUMN.emailParent, value: parentEmail)
                 .single()
                 .execute()
                 .value
+            
+            return pin
         } catch {
             throw FHKSupabaseError.unknown(error.localizedDescription)
         }
