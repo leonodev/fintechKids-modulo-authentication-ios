@@ -10,21 +10,21 @@ import Supabase
 import FHKDomain
 
 public extension Session {
-    public func toDomain(pinApprove: String) -> FHKUserSession {
+    func toDomain(aditionalInfo: InfoAditional? = nil) -> FHKUserSession {
         return FHKUserSession(
             id: self.user.id,
             email: self.user.email ?? "",
             accessToken: self.accessToken,
             refreshToken: self.refreshToken,
             expiresAt: Date(timeIntervalSince1970: TimeInterval(self.expiresAt)),
-            pinApproved: pinApprove
+            infoAditional: aditionalInfo
         )
     }
 }
 
 
 extension AuthResponse {
-    func toDomain(pinApprove: String) -> FHKUserSession {
+    func toDomain(aditionalInfo: InfoAditional? = nil) -> FHKUserSession {
         switch self {
         case .session(let session):
             return FHKUserSession(
@@ -32,7 +32,7 @@ extension AuthResponse {
                 email: session.user.email ?? "",
                 accessToken: session.accessToken,
                 refreshToken: session.refreshToken,
-                pinApproved: pinApprove
+                infoAditional: aditionalInfo
             )
         case .user(let user):
             return FHKUserSession(
@@ -40,7 +40,7 @@ extension AuthResponse {
                 email: user.email ?? "",
                 accessToken: nil,
                 refreshToken: nil,
-                pinApproved: pinApprove
+                infoAditional: aditionalInfo
             )
         }
     }

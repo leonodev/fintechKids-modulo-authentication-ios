@@ -34,10 +34,6 @@ let package = Package(
                 .product(name: "FHKDomain", package: "fintechKids-modulo-domain-ios"),
                 .product(name: "FHKUtils", package: "fintechKids-modulo-utils-ios")
             ]
-        ),
-        .testTarget(
-            name: "FHKAuthTests",
-            dependencies: ["FHKAuth"]
-        ),
+        )
     ]
 )

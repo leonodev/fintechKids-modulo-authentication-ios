@@ -10,6 +10,7 @@ import Supabase
 import PostgREST
 import FHKDomain
 import FHKUtils
+import FHKDomain
 
 public final class FHKSupabase: FHKAuthProtocol, FHKSupabaseErrorProtocol {
     private let client: SupabaseClient
@@ -22,8 +23,8 @@ public final class FHKSupabase: FHKAuthProtocol, FHKSupabaseErrorProtocol {
         do {
             let session = try await client.auth.signIn(email: loginEntity.email,
                                                        password: loginEntity.password)
-            let pin = try await fetchAprovedPin(parentEmail: loginEntity.email)
-            return session.toDomain(pinApprove: pin)
+            let aditionalInfo = try await loadAditionalInformation(emailParent: loginEntity.email)
+            return session.toDomain(aditionalInfo: aditionalInfo)
         } catch {
             throw handleAuthError(error, context: loginEntity.toSafeLogString())
         }
@@ -47,7 +48,10 @@ public final class FHKSupabase: FHKAuthProtocol, FHKSupabaseErrorProtocol {
                 .insert(familyData)
                 .execute()
             
-            return try signUp.toDomain(pinApprove: registerEntity.approvePIN)
+            let aditionalInfo = InfoAditional(pinApproved: registerEntity.approvePIN,
+                                              familyName: registerEntity.familyName.lowercased())
+            
+            return signUp.toDomain(aditionalInfo: aditionalInfo)
             
         } catch {
             throw handleAuthError(error, context: registerEntity.toSafeLogString())
@@ -60,8 +64,9 @@ public final class FHKSupabase: FHKAuthProtocol, FHKSupabaseErrorProtocol {
     
     public func refreshSession(emailParent: String) async throws -> FHKUserSession {
         let session = try await client.auth.refreshSession()
-        let pin = try await fetchAprovedPin(parentEmail: emailParent)
-        return session.toDomain(pinApprove: pin)
+        
+        let aditionalInfo = try await loadAditionalInformation(emailParent: emailParent)
+        return session.toDomain(aditionalInfo: aditionalInfo)
     }
 
     public var isUserAuthenticated: Bool {
@@ -80,7 +85,7 @@ private extension FHKSupabase {
     
     func fetchAprovedPin(parentEmail: String) async throws -> String {
         do {
-            let result: FamilyPinResponse = try await client
+            let result: FamilyInfoResponse = try await client
                 .from(DB.TABLE_FAMILIES.NAME)
                 .select(DB.TABLE_FAMILIES.COLUMN.approvePin)
                 .eq(DB.TABLE_FAMILIES.COLUMN.emailParent, value: parentEmail)
@@ -89,6 +94,23 @@ private extension FHKSupabase {
                 .value
             
             return result.approve_pin
+        } catch {
+            throw FHKSupabaseError.unknown(error.localizedDescription)
+        }
+    }
+    
+    func fetchFamilyName(parentEmail: String) async throws -> String {
+        do {
+            let result: FamilyInfoResponse = try await client
+                .from(DB.TABLE_FAMILIES.NAME)
+                .select(DB.TABLE_FAMILIES.COLUMN.nameFamily)
+                .eq(DB.TABLE_FAMILIES.COLUMN.emailParent, value: parentEmail)
+                .single()
+                .execute()
+                .value
+            
+            return result.name_family
+                
         } catch {
             throw FHKSupabaseError.unknown(error.localizedDescription)
         }
@@ -128,9 +150,18 @@ private extension FHKSupabase {
             return .unknown(error.localizedDescription)
         }
     }
+    
+    func loadAditionalInformation(emailParent: String) async throws -> InfoAditional? {
+        async let pin = try await fetchAprovedPin(parentEmail: emailParent)
+        async let nameFamily = try await fetchFamilyName(parentEmail: emailParent)
+        
+        let info: (pin: String, family: String) = try await (pin, nameFamily)
+        return InfoAditional(pinApproved: info.pin, familyName: info.family)
+    }
 }
 
 
-struct FamilyPinResponse: Decodable {
+struct FamilyInfoResponse: Decodable {
     let approve_pin: String
+    let name_family: String
 }
