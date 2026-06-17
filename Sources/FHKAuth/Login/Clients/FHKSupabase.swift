@@ -152,11 +152,11 @@ private extension FHKSupabase {
     }
     
     func loadAditionalInformation(emailParent: String) async throws -> InfoAditional? {
-        async let pin = try await fetchAprovedPin(parentEmail: emailParent)
-        async let nameFamily = try await fetchFamilyName(parentEmail: emailParent)
+        async let pin = try fetchAprovedPin(parentEmail: emailParent)
+        async let nameFamily = try fetchFamilyName(parentEmail: emailParent)
         
-        let info: (pin: String, family: String) = try await (pin, nameFamily)
-        return InfoAditional(pinApproved: info.pin, familyName: info.family)
+        let (approvedPin, familyName) = try await (pin, nameFamily)
+        return InfoAditional(pinApproved: approvedPin, familyName: familyName)
     }
 }
 
