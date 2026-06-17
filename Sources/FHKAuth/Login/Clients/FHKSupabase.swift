@@ -83,34 +83,17 @@ public final class FHKSupabase: FHKAuthProtocol, FHKSupabaseErrorProtocol {
 // MARK: Private Methods
 private extension FHKSupabase {
     
-    func fetchAprovedPin(parentEmail: String) async throws -> String {
+    func fetchInfoFamily(parentEmail: String) async throws -> FamilyInfoResponse {
         do {
             let result: FamilyInfoResponse = try await client
                 .from(DB.TABLE_FAMILIES.NAME)
-                .select(DB.TABLE_FAMILIES.COLUMN.approvePin)
+                .select(DB.TABLE_FAMILIES.SELECT_FAMILY_INFO)
                 .eq(DB.TABLE_FAMILIES.COLUMN.emailParent, value: parentEmail)
                 .single()
                 .execute()
                 .value
             
-            return result.approve_pin
-        } catch {
-            throw FHKSupabaseError.unknown(error.localizedDescription)
-        }
-    }
-    
-    func fetchFamilyName(parentEmail: String) async throws -> String {
-        do {
-            let result: FamilyInfoResponse = try await client
-                .from(DB.TABLE_FAMILIES.NAME)
-                .select(DB.TABLE_FAMILIES.COLUMN.nameFamily)
-                .eq(DB.TABLE_FAMILIES.COLUMN.emailParent, value: parentEmail)
-                .single()
-                .execute()
-                .value
-            
-            return result.name_family
-                
+            return result
         } catch {
             throw FHKSupabaseError.unknown(error.localizedDescription)
         }
@@ -152,10 +135,10 @@ private extension FHKSupabase {
     }
     
     func loadAditionalInformation(emailParent: String) async throws -> InfoAditional? {
-        async let pin = try fetchAprovedPin(parentEmail: emailParent)
-        async let nameFamily = try fetchFamilyName(parentEmail: emailParent)
+        async let info = try fetchInfoFamily(parentEmail: emailParent)
         
-        let (approvedPin, familyName) = try await (pin, nameFamily)
+        let (approvedPin, familyName) = try await (info.approve_pin,
+                                                   info.name_family)
         return InfoAditional(pinApproved: approvedPin, familyName: familyName)
     }
 }

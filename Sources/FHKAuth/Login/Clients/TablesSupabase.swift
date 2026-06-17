@@ -16,5 +16,10 @@ public struct DB {
             public static let emailParent = "email_parent"
             public static let approvePin = "approve_pin"
         }
+        
+        public static let SELECT_FAMILY_INFO = """
+                    approve_pin,
+                    name_family
+                    """
     }
 }
