@@ -61,6 +61,7 @@ public final class SecurityManager: JailbreakManagerProtocol, @unchecked Sendabl
         }
     }
 
+    @MainActor
     private func checkCydiaCanBeOpened() -> Bool {
         // Importante: Esto requiere LSApplicationQueriesSchemes en Info.plist
         guard let url = URL(string: "cydia://package/com.example.package") else { return false }
