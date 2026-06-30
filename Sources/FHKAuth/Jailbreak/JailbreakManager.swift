@@ -61,11 +61,19 @@ public final class SecurityManager: JailbreakManagerProtocol, @unchecked Sendabl
         }
     }
 
-    @MainActor
+//    @MainActor
+//    private func checkCydiaCanBeOpened() -> Bool {
+//        // Importante: Esto requiere LSApplicationQueriesSchemes en Info.plist
+//        guard let url = URL(string: "cydia://package/com.example.package") else { return false }
+//        return UIApplication.shared.canOpenURL(url)
+//    }
+    
     private func checkCydiaCanBeOpened() -> Bool {
-        // Importante: Esto requiere LSApplicationQueriesSchemes en Info.plist
-        guard let url = URL(string: "cydia://package/com.example.package") else { return false }
-        return UIApplication.shared.canOpenURL(url)
+        // Usar DispatchQueue.main.sync para ejecutar en el Main Actor
+        return DispatchQueue.main.sync {
+            guard let url = URL(string: "cydia://package/com.example.package") else { return false }
+            return UIApplication.shared.canOpenURL(url)
+        }
     }
 
     private func canForkProcess() -> Bool {
